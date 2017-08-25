@@ -1,0 +1,112 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Stock mínimo</title>
+	</h:head>
+	<h:body>
+	<div class="wrapper">
+<ui:include src="/includes/header.xhtml"></ui:include>
+		<h:form>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+		    <ui:include src="/includes/menu.xhtml"></ui:include>
+			
+			<p:dataTable id="contenedorProducto" widgetVar="productoBusqueda" var="producto"
+					value="#{MBean.pStockMinimo}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredpStockMinimo}"
+					emptyMessage="No existen productos con stock por debajo del minimo" sortMode="multiple">
+					<f:facet name="header">
+						Productos con stock por debajo del mínimo
+						<p:spacer width="20" />
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('productoBusqueda').filter()" placeholder="Buscar"/>
+						</p:outputPanel> 
+					</f:facet>
+
+					
+					<p:column sortBy="#{producto.nombre}" filterBy="#{producto.nombre}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Nombre" 
+								title="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{producto.nombre}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.precioCompra}" filterBy="#{producto.precioCompra}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Precio(Compra)" 
+								title="Precio(Compra)"/>
+						</f:facet>
+						<h:outputText value="$#{producto.precioCompraString}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.precioNominal}" filterBy="#{producto.precioNominal}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Precio(Nominal)" 
+								title="Precio(Nominal)"/>
+						</f:facet>
+						<h:outputText value="$#{producto.precioNominalString}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.rubro.nombre}" filterBy="#{producto.rubro.nombre}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Rubro" 
+								title="Rubro"/>
+						</f:facet>
+						<h:outputText value="#{producto.rubro.nombre}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.fechaAlta}" filterBy="#{producto.fechaAlta}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Fecha de Alta" 
+								title="Fecha Alta"/>
+						</f:facet>
+						<h:outputText value="#{producto.fechaString}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.stock}" filterBy="#{producto.stock}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Stock" title="Stock"/>
+						</f:facet>
+						<h:outputText value="#{producto.stock}" />
+					</p:column>
+					
+					<p:column sortBy="#{producto.stockMinimo}" filterBy="#{producto.stockMinimo}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Stock Mínimo" title="Stock Mínimo"/>
+						</f:facet>
+						<h:outputText value="#{producto.stockMinimo}" />
+					</p:column>
+										
+					<p:column filterBy="#{producto.descripcion}" filterMatchMode="contains"
+						filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Descripción"
+								title="Descripción" />
+						</f:facet>
+						<h:outputText value="#{producto.descripcion}" />
+					</p:column>
+					
+				</p:dataTable>
+		    
+		</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

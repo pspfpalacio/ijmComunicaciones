@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+
+			
+			<p:dialog header="Gestión de listas de precios" widgetVar="dialogLP" id="dialogLPr" closable="false" closeOnEscape="false">
+			<p:outputPanel id="dialogolp">
+   				<p:panelGrid columns="2">
+   				
+   				
+   					<h:outputLabel value="Nombre: " />
+   					<h:inputText value="#{MBean.lp.nombre}" ></h:inputText>
+
+   					
+   					<p:commandButton value="Guardar" action="#{MBean.guardarLP()}" oncomplete="PF('dialogLP').hide()" update="messages, contenedorLP"/>
+   					<p:commandButton value="Cancelar" action="#{MBean.cancelarLP()}" oncomplete="PF('dialogLP').hide()" update="formlp"/>
+   					
+   				</p:panelGrid>
+   				</p:outputPanel>
+			</p:dialog>
+			
+			
+
+
+
+	</ui:composition>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Roles</title>
+	</h:head>
+	<h:body>
+	<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formroles">
+				<ui:include src="/includes/menu.xhtml"></ui:include>
+				<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+
+				<p:dataTable id="contenedorRoles" widgetVar="rolBusqueda" var="rol"
+					value="#{MBean.listadoRoles}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredListadoRoles}"
+					emptyMessage="No existen Roles" sortMode="multiple">
+					<f:facet name="header">
+						Roles
+						<p:commandButton value="Nuevo" oncomplete="PF('dialogRol').show();"/>
+						<p:spacer width="20" />
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('rolBusqueda').filter()" placeholder="Buscar"/>
+						</p:outputPanel> 
+					</f:facet>
+					
+					<p:column style="text-align: center;" id="modificar">
+						<f:facet name="header">
+							<h:outputText value="Modificar" title="Modificar el Rol" />
+						</f:facet>						
+						<p:commandLink title="Modificar" action="#{MBean.onEditRol(rol)}" disabled="#{rol.estado}"
+							update=":formroles:panelRoles" oncomplete="PF('dialogRol').show();">							
+							<h:graphicImage value="/images/edit.ico" width="20" id="edit" />
+						</p:commandLink>
+					</p:column>
+					
+					<p:column sortBy="#{rol.nombre}" filterBy="#{rol.nombre}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Nombre" 
+								title="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{rol.nombre}" />
+					</p:column>
+					
+					<p:column style="text-align: center;" id="eliminar">
+						<f:facet name="header">
+							<h:outputText value="Eliminar" title="Eliminar Rol" />
+						</f:facet>						
+						<h:commandLink title="Eliminar" action="#{MBean.onElimRol(rol)}" disabled="#{rol.estado}" 
+							onclick="return confirm('Desea eliminar el rol:  #{rol.nombre}?')">							
+							<h:graphicImage value="/images/elim.png" width="20" id="elim" />
+						</h:commandLink>
+					</p:column>
+
+				</p:dataTable>
+				
+				<br />
+				
+				<ui:include src="/vistas/roles/dialogRol.xhtml"></ui:include>
+
+			</h:form>
+			
+			
+		</div>
+	</h:body>
+	
+	</f:view>
+	</ui:composition>
+</html>

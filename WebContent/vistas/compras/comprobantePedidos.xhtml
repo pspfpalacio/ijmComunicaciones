@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Comprobante Compra</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formcomCompra">
+					<p:growl id="messages" sticky="true" showDetail="false"
+						autoUpdate="true" life="2000" />
+					<p:panelGrid columns="2" style="width:100%" styleClass="panelGrid">
+						<f:facet name="header">
+							<p:outputLabel value="Compra Guardada con Éxito" />
+						</f:facet>
+						
+						<p:outputLabel value="Número de Compra: " />
+						<p:outputLabel value="#{MBean.compra.id}" />
+						
+						<p:outputLabel value="Proveedor(Nombre y Apellido): " />
+						<p:outputLabel value="#{MBean.compra.cliente.apellido}" />
+						
+						<p:outputLabel value="Proveedor(Negocio): " />
+						<p:outputLabel value="#{MBean.compra.cliente.nombre}" />
+						
+						<p:outputLabel value="IJM Comunicaciones - www.ijmcomunicaciones.com.ar" />
+						<p:outputLabel value="#{MBean.currentDate.toLocaleString().substring(0,12)}" />
+					</p:panelGrid>
+					
+					<p:dataTable id="comCompra"
+						style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px"
+						widgetVar="com" var="det" value="#{MBean.getDetallesPedidos()}"
+						paginator="true" rows="16" paginatorPosition="bottom"
+						emptyMessage="No hay productos activos">
+						<f:facet name="header">
+				            Detalle de Compra
+				        </f:facet>
+
+						<p:column headerText="Cantidad">
+							<p:outputLabel value="#{det.cantidad}" />
+						</p:column>
+						<p:column headerText="Producto">
+							<p:outputLabel value="#{det.producto.nombre}" />
+						</p:column>
+						<p:column headerText="Precio Unitario">
+							<p:outputLabel value="$ #{det.precioUnitario}" />
+						</p:column>
+						<p:column headerText="Subtotal">
+							<p:outputLabel value="$ #{det.subtotal}" />
+						</p:column>
+						
+						<f:facet name="footer">
+							<h:outputText value="$#{MBean.compra.montoString}" />
+						</f:facet>
+					</p:dataTable>
+				</h:form>
+				<h:panelGrid columns="2">
+					<h:form target="_blank">
+						<p:commandButton action="#{MBean.generarcomprobanteCompra('Compra')}"
+									value="Generar Comprobante" ajax="false"></p:commandButton>
+					</h:form>
+					<h:form id="formButton">
+						<p:commandButton value="Volver" action="#{MBean.volverCompra()}"></p:commandButton>
+					</h:form>
+				</h:panelGrid>
+			</div>
+		</h:body>
+	</f:view>
+</ui:composition>
+</html>

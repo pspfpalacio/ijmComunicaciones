@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="#{request.contextPath}/images/icono.ico" />
+			<link rel="stylesheet" href="#{request.contextPath}/includes/estilo.css"
+				type="text/css" />
+			<title>Login</title>
+		</h:head>
+		
+		
+		
+			<h:body style="text-align:center">
+				<div class="wrapper">
+				<div>
+					<img alt="HEADER" src="images/headerbanner.jpg" width="100%"/>
+				</div>
+				<h:form id="formularioLogin">
+					<p:growl id="mensajes" showDetail="true" life="2000" />
+					<p:panel header="Login" style="width:350px" styleClass="panelGrid">
+				      <h:panelGrid columns="2" cellpadding="5">
+				        <h:outputLabel for="username" value="Usuario:" />
+				        <p:inputText value="#{MBean.nombreLogin}" id="username"
+				           required="true" label="username" />
+				        <h:outputLabel for="password" value="Clave:" />
+				        <p:password value="#{MBean.passLogin}" id="password" required="true"
+				           label="password" />
+				        <f:facet name="footer">
+				          <p:commandButton id="loginButton" value="Login"
+				             action="#{MBean.login()}" update=":mensajes"
+				             oncomplete="manejarLogin(xhr, status, args)" ajax="false"/>
+				        </f:facet>
+				      </h:panelGrid>
+				    </p:panel>
+				
+				
+				</h:form>
+			
+				</div>
+			</h:body>		
+		
+		<script type="text/javascript">
+  			//<![CDATA[
+  			function manejarLogin(xhr, status, args) {
+    			if (!args.validationFailed && args.estaLogeado) {
+      				setTimeout(function() {
+        			window.location = args.view;
+      				}, 500);
+    			}
+  			}
+			//]]>
+		</script>
+	</f:view>
+	</ui:composition>
+</html>

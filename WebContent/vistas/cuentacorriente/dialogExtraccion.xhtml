@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+			<p:dialog header="Movimiento" widgetVar="dialogExtraccion" id="dialog" closable="false" closeOnEscape="false">
+				<p:outputPanel id="panel">
+	   				<p:panelGrid columns="2">	   				
+	   					
+	   					<h:outputLabel value="Monto: " />
+	   					<p:inputText value="#{MBean.caja.monto}" />
+	   					<h:outputLabel value="Tipo: " />
+	   					<p:selectOneMenu value="#{MBean.caja.tipo}" id="comboBoxR">
+   								<f:selectItem itemLabel="Salida" itemValue="Salida" />
+   								<f:selectItem itemLabel="Entrada" itemValue="Entrada" />
+						</p:selectOneMenu>
+	   					<h:outputLabel value="Concepto: " />
+	   					<p:inputTextarea value="#{MBean.caja.concepto}" cols="40" rows="2" autoResize="true"/>
+	   					
+	   					<p:commandButton value="Guardar" action="#{MBean.guardarExtraccion()}" 
+	   						oncomplete="PF('dialogExtraccion').hide()" update="messages, formcaja"/>
+	   					<p:commandButton value="Cancelar" action="#{MBean.cancelarExtraccion()}" 
+	   						oncomplete="PF('dialogExtraccion').hide()" update="formcaja"/>
+	   					
+	   				</p:panelGrid>
+   				</p:outputPanel>
+			</p:dialog>
+	</ui:composition>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<div>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="#{MBean.goIndex()}" icon="ui-icon-myHome" process="@this"/>
+			
+			<p:submenu label="Parametros" rendered="#{MBean.vistaParametros}">
+				<p:menuitem value="Rubros" action="#{MBean.goRubro()}" rendered="#{MBean.vistaRubro}" process="@this"/>
+				<p:menuitem value="Productos" action="#{MBean.goProductos()}" rendered="#{MBean.vistaProducto}" process="@this"/>
+				<p:menuitem value="Listas de Precios" action="#{MBean.goListaPrecios()}" rendered="#{MBean.vistaLP}" process="@this"/>
+				<p:menuitem value="Proveedores" action="#{MBean.goProveedores()}" rendered="#{MBean.vistaProveedor}" process="@this"/>
+				<p:menuitem value="Clientes" action="#{MBean.goCliente()}" rendered="#{MBean.vistaCliente}" process="@this"/>
+				<p:menuitem value="Roles" action="#{MBean.goRoles()}" rendered="#{MBean.vistaRol}" process="@this"/>				
+				<p:menuitem value="Usuarios" action="#{MBean.goUsuarios()}" rendered="#{MBean.vistaUsuario}" process="@this"/>
+			</p:submenu>
+			
+			<p:submenu label="Compras" rendered="#{MBean.vistaMenuCompra}">
+				<p:menuitem value="Nuevo Pedido" action="#{MBean.goCompra()}" rendered="#{MBean.vistaNuevoPedido}" process="@this"/>
+				<p:menuitem value="Pedidos/Compras" action="#{MBean.goPedidos()}" rendered="#{MBean.vistaCompras}" process="@this"/>
+			</p:submenu>
+			
+			<p:submenu label="Ventas" rendered="#{MBean.vistaMenuVenta}">
+				<p:menuitem value="Nueva Venta" action="#{MBean.nuevaVenta()}" rendered="#{MBean.vistaNuevaVenta}" process="@this"/>
+				<p:menuitem value="Ventas Listado" action="#{MBean.goBajaVenta()}" rendered="#{MBean.vistaVentas}" process="@this"/>
+			</p:submenu>
+			
+			<p:submenu label="Movimientos" rendered="#{MBean.vistaMovimientos}">
+				<p:menuitem value="Pago" action="#{MBean.goPagos()}" rendered="#{MBean.vistaPagos}" process="@this"/>
+				<p:menuitem value="Credito" action="#{MBean.goCredito()}" rendered="#{MBean.vistaCredito}" process="@this"/>
+				<p:menuitem value="Debito" action="#{MBean.goDebito()}" rendered="#{MBean.vistaDebito}" process="@this"/>
+			</p:submenu>
+			
+			<p:submenu label="Cargas Virtuales" rendered="#{MBean.vistaMenuCargaVirtual}">
+				<p:menuitem value="Listado" action="#{MBean.goCargaVirtual()}" rendered="#{MBean.vistaCargaVirtual}" process="@this"/>
+				<p:menuitem value="Compra" action="#{MBean.goCompraCargaVirtual()}" rendered="#{MBean.vistaCompraCargaVirtual}" process="@this"/>				
+				<p:menuitem value="Carga de Excel" action="#{MBean.goUpload()}" rendered="#{MBean.vistaExcel}" process="@this"/>
+			</p:submenu>			
+
+			<p:submenu label="Reportes" icon="ui-icon-pencil" rendered="#{MBean.vistaReportes}">
+				<p:submenu label="Rankings">
+					<p:submenu label="Productos Por Venta">
+						<p:menuitem value="Cantidad" action="#{MBean.goRankingVentaProductoCant()}" process="@this"/>
+						<p:menuitem value="Monto" action="#{MBean.goRankingVentaProductoMonto()}" process="@this"/>
+					</p:submenu>
+					<p:submenu label="Productos Por Compra">
+						<p:menuitem value="Cantidad" action="#{MBean.goRankingCompraProductoCant()}" process="@this"/>
+						<p:menuitem value="Monto" action="#{MBean.goRankingCompraProductoMonto()}" process="@this"/>
+					</p:submenu>
+					<p:menuitem value="Clientes Por Venta" action="#{MBean.goRankingVentaClienteMonto()}" process="@this"/>
+					<p:menuitem value="Proveedores Por Compra" action="#{MBean.goRankingCompraClienteMonto()}" process="@this"/>
+					<p:menuitem value="Carga Virtual" action="#{MBean.goRankingCargaVirtual()}" process="@this"/>
+				</p:submenu>
+				<p:menuitem value="Ganancias" action="#{MBean.goReporteGanancias()}" process="@this"/>
+				<p:menuitem value="Patrimonio" action="#{MBean.goPatrimonio()}" process="@this"/>				
+			</p:submenu>
+			
+			<p:menuitem value="Caja" action="#{MBean.goCaja()}" rendered="#{MBean.vistaCaja}" process="@this"/>
+			
+			<p:menuitem value="Backups" action="#{MBean.goBackup()}" process="@this"/>
+			
+			<p:menuitem value="Excels" action="#{MBean.goCargaExcel()}" process="@this" />
+
+			<f:facet name="options">
+				
+				<p:commandLink rendered="#{MBean.renderedStockMinimo}" action="#{MBean.goStockMinimo()}" process="@this">				
+					<h:graphicImage value="/images/exclam.gif" width="20"
+											id="icoStock" title="Productos por debajo del stock minimo" />
+				</p:commandLink>
+				<p:outputLabel value="#{MBean.nombreLogin}     " style="font-family:sans-serif;" />				
+				<p:commandButton icon="ui-icon-gear" action="#{MBean.settingUsuario()}" process="@this"
+					oncomplete="PF('setting').show();" update="panelSetting"/>
+				<p:commandButton id="ButtonLogout" action="#{MBean.logout()}" 
+					value="Logout" icon="ui-icon-extlink" ajax="false" url="/login.xhtml"/>
+			</f:facet>
+
+		</p:menubar>
+		<ui:include src="/includes/settings.xhtml" />
+		<p:idleMonitor onactive="PF('sessionTimeOutDialog').show()" timeout="3600000" />
+		<p:dialog header="Session Caducada!" widgetVar="sessionTimeOutDialog" modal="true" closable="false" 
+			width="400" visible="false">
+			
+			<h:outputText value="La sesión ha caducado, por favor, pulse sobre el siguiente botón para volver a acceder a la aplicación" />
+			<input id="confirmBackToLogin" type="button" value="Volver a acceder a la aplicación" 
+			onclick="window.location='#{facesContext.externalContext.requestContextPath}/login.xhtml';" />
+			
+		</p:dialog>
+	</div>
+	<script type="text/javascript">
+		  //<![CDATA[
+		  function logout(xhr, status, args) {
+		    setTimeout(function() {
+		      window.location = '/login.xhtml';
+		    }, 3600);
+		  }
+		//]]>
+	</script>
+	</ui:composition>
+</html>

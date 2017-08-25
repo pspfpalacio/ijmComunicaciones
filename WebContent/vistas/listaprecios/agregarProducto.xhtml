@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	
+		<p:dialog header="Agregar productos" widgetVar="prodLista" id="prdoLista" closable="false" closeOnEscape="false">
+			<p:outputPanel id="panelProdLista">
+   				<p:panelGrid columns="2">
+   				
+   					<p:column>
+   					<h:outputLabel value="Porcentaje sobre precio de compra: " />
+   					<p:selectBooleanCheckbox value="#{MBean.porcentaje}">
+   					<p:ajax event="change" listener="#{MBean.checkPorcentaje()}" update="porcentaje, descuento"/>
+   					<p:inputText value="#{MBean.LPP.porcentaje}" id="porcentaje" disabled="#{!MBean.porcentaje}"/>
+   					</p:selectBooleanCheckbox>
+   					</p:column>
+   					
+   					<p:column >
+   					<h:outputLabel value="Descuento sobre precio nominal: " />
+   					<p:selectBooleanCheckbox value="#{MBean.descuento}">
+   					<p:ajax event="change" listener="#{MBean.checkDescuento()}" update="porcentaje, descuento"/>
+   					<p:inputText value="#{MBean.LPP.descuento}" id="descuento" disabled="#{!MBean.descuento}"/>
+   					</p:selectBooleanCheckbox>
+   					</p:column>
+
+   					
+   					<p:commandButton value="Guardar" action="#{MBean.guardarLP()}" oncomplete="PF('dialogRubro').hide()" update="messages"/>
+   					<p:commandButton value="Cancelar" action="#{MBean.cancelarLP()}" oncomplete="PF('dialogRubro').hide()"/>
+   					
+   				</p:panelGrid>
+   				</p:outputPanel>
+			</p:dialog>
+	
+	</ui:composition>
+</html>

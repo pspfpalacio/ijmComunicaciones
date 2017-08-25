@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="images/icono.ico" />
+		<link rel="stylesheet" href="/includes/estilo.css" type="text/css" />
+		<title>Inicio</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<div>
+				<img alt="HEADER" src="images/headerbanner.jpg" width="100%"/>
+			</div>
+		<h:form>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+		    <div>
+			<p:menubar>
+				<p:menuitem value="Inicio" action="vistacliente" icon="ui-icon-myHome" />
+				
+				<p:submenu label="Movimientos Cuenta Corriente">
+					<p:menuitem value="Cuenta Corriente" 
+					action="#{beanCuenta.goCuentaCorrienteVistaCliente(MBean.clienteVista, 'vistacliente')}" />
+				</p:submenu>	
+	
+				<f:facet name="options">
+					<p:outputLabel value="#{MBean.nombreLogin}     " style="font-family:sans-serif;" />
+					<p:commandButton icon="ui-icon-disk" action="#{MBean.settingUsuario()}" 
+						oncomplete="PF('dialogUsuarioVista').show();" update="panelUser"/>
+					<p:commandButton id="ButtonLogout" action="#{MBean.logout()}" 
+						value="Logout" icon="ui-icon-extlink" ajax="false" url="/login.xhtml"/>
+				</f:facet>
+	
+			</p:menubar>
+			<ui:include src="/vistas/vistaclientes/dialogUsuarioVista.xhtml"></ui:include>
+			</div>
+		    <p:panel styleClass="panelGrid" style="margin-top:20px;">
+		    
+		    	<h1>Bienvenido <p:outputLabel value="#{MBean.nombreLogin}" /> </h1> <h2> <p:clock pattern="dd/MM/yyyy - hh:mm:ss" /> </h2>
+		    
+		    </p:panel>
+		    
+		</h:form>
+		</div>
+		<script type="text/javascript">
+			  //<![CDATA[
+			  function logout(xhr, status, args) {
+			    setTimeout(function() {
+			      window.location = '/login.xhtml';
+			    }, 500);
+			  }
+			//]]>
+		</script>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

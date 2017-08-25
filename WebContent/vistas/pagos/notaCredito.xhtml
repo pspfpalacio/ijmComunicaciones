@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Nota de Credito</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formcredito">
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" sticky="true" showDetail="false"
+						autoUpdate="true" life="2000" />
+
+					<p:panelGrid columns="2" style="width:100%; margin_top:20px;">
+						<f:facet name="header">
+							<p:outputLabel value="Credito Para Cliente o Proveedor" />
+						</f:facet>
+						<p:outputLabel value="Seleccione Cliente o Proveedor:(Apellido y Nombre) " />
+						<p:selectOneMenu id="oneMenu" value="#{MBean.idClienteCredito}" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Seleccione" itemValue="0"/>
+							<f:selectItems value="#{MBean.listaClientesCredito}" var="cli" itemLabel="#{cli.apellido}"
+								itemValue="#{cli.id}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Fecha: " />
+						<p:calendar value="#{MBean.fechaPago}" pattern="dd/MM/yyyy" />
+						<p:outputLabel value="Monto: " />
+						<p:inputText value="#{MBean.montoCredito}" />
+						<p:outputLabel value="Concepto: " />
+						<p:inputTextarea value="#{MBean.conceptoCredito}" cols="40" rows="2" autoResize="true"/>
+						<f:facet name="footer">
+							<p:commandButton value="Aceptar" action="#{MBean.guardarCredito()}"
+								update="formcredito" />
+							<p:commandButton value="Cancelar" action="#{MBean.cancelarCreditoDebito()}"
+								update="formcredito" />
+						</f:facet>
+					</p:panelGrid>
+
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+	</ui:composition>
+</html>

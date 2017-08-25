@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+								<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+						<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		
+			<title>Importar archivos excel</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+				
+				
+				
+				<h:form id="formUpload" enctype="multipart/form-data">
+				<ui:include src="/includes/menu.xhtml"></ui:include>
+					
+					
+										
+						<p:panelGrid styleClass="panelGrid" columns="1" style="width:100%">
+						<f:facet name="header">
+							<h:outputLabel value="Seleccione una plataforma: " />
+					        <p:selectOneMenu id="excelddl" value="#{MBean.idPlataforma}" style="width:300px">
+					            <f:selectItem itemLabel="Seleccione..." itemValue="0" noSelectionOption="true"/>
+					            <f:selectItem itemLabel="Pinweb" itemValue="1" />
+					            <f:selectItem itemLabel="Re Virtual" itemValue="2" />
+					            <f:selectItem itemLabel="Telerecargas" itemValue="4" />
+					            <f:selectItem itemLabel="Pinweb Mercader444" itemValue="6" />
+					            
+					            <p:ajax event="change" listener="#{MBean.onChangePlataforma()}" update="formUpload"/>
+					        </p:selectOneMenu>
+					        
+					        <h:outputLabel value="#{MBean.advertencia}" style="margin-left:50px;"/>
+					    </f:facet>
+					    </p:panelGrid>
+
+					
+					<p:fileUpload fileUploadListener="#{MBean.upload}" mode="advanced" rendered="#{MBean.selectedPlataforma}"
+						dragDropSupport="false" uploadLabel="Cargar" id="upload"
+						cancelLabel="Cancelar" label="Seleccione" oncomplete="upload"
+						style="margin-top: 20px;" update="messages" sizeLimit="1000000"
+						fileLimit="1" allowTypes="/(\.|\/)(xls|csv)$/"
+						invalidFileMessage="El tipo de archivo no es válido" />
+
+					<p:growl id="messages" showDetail="true" />
+
+					<p:panelGrid styleClass="panelGrid" columns="2" style="width:100%" id="confirmar" rendered="#{MBean.selectedPlataforma}">
+						<f:facet name="header">
+							<h:outputLabel value="Confirmación de actualización"/>
+					    </f:facet>
+
+						<p:commandButton value="Aceptar" onclick="return confirm('Esta seguro que desea aceptar?')" 
+						action="#{MBean.importFile()}" ajax="false"></p:commandButton>
+						<p:commandButton value="Cancelar" action="#{MBean.cancelForm()}"
+						onclick="return confirm('Esta seguro que desea cancelar?')" ajax="false"></p:commandButton>
+					</p:panelGrid>
+
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+
+</ui:composition>
+</html>

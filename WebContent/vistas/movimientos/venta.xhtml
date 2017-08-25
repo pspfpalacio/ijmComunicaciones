@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Ventas</title>
+		</h:head>
+
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formventa">
+				<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:panel style="float: right; width: 225px;">
+						<p:clock pattern="dd/MM/yyyy - hh:mm" />
+					</p:panel>
+					<p:panelGrid columns="4" style="width: 100%;">
+						<f:facet name="header">
+									Ventas
+						</f:facet>
+						<h:outputLabel value="Cliente: " />
+						<p:selectOneMenu value="#{MBean.idClienteVenta}" id="comboBoxCli" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Seleccione.." itemValue="0"
+								noSelectionOption="true" />
+							<f:selectItems value="#{MBean.listVentaCliente}" />
+							<p:ajax event="change" update="contenedorProductosVenta, formventa"
+								listener="#{MBean.onChangeClienteVenta()}" />
+						</p:selectOneMenu>
+						<h:outputLabel value="Fecha: " />
+						<p:calendar id="popup" value="#{MBean.fechaVta}" pattern="dd/MM/yyyy" />
+						<p:outputLabel value="Nombre: "/>
+						<p:outputLabel value="#{MBean.nombreNegocio}"/>
+						<p:outputLabel value="Dirección: "/>
+						<p:outputLabel value="#{MBean.direccion}"/>
+						<p:outputLabel value="Teléfono: "/>
+						<p:outputLabel value="#{MBean.telefono}"/>	
+						<p:outputLabel value="Mail: "/>
+						<p:outputLabel value="#{MBean.mail}"/>						
+					</p:panelGrid>
+
+
+					<p:dataTable id="contenedorProductosVenta"						
+						var="productos" value="#{MBean.productosParaVenta}"	filteredValue="#{MBean.filteredProductosParaVenta}"	
+						editable="true" editMode="cell"
+						widgetVar="cellProductos" emptyMessage="No hay productos activos"
+						style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px">
+						
+						<f:facet name="header">
+							Seleccionar productos para la venta
+						</f:facet>
+						
+						<p:ajax event="cellEdit" listener="#{MBean.onCellEditVenta(productos)}" update="cantidad, cant" />
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre" title="Nombre de Producto" />
+							</f:facet>
+							<h:outputText value="#{productos.producto.nombre}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Stock" title="Stock" />
+							</f:facet>
+							<h:outputText value="#{productos.producto.stock}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header"  >
+								<h:outputText value="Precio de venta" title="Precio de venta" />
+							</f:facet>
+							<h:outputText value="$#{productos.stringPreciovta}" rendered="#{productos.boolPreciovta}"/>
+						</p:column>	
+						
+						<p:column>
+							<f:facet name="header"  >
+								<h:outputText value="Ganancia/Nominal" title="Ganancia" />
+							</f:facet>
+							<h:outputText value="$#{productos.stringGanancia}" rendered="#{productos.boolGanancia}"/>
+						</p:column>
+						
+						<p:column headerText="Cantidad">
+				              <p:cellEditor>
+				                  <f:facet name="output"><h:outputText id="cant" value="#{productos.cantidad}" /></f:facet>
+				                  <f:facet name="input"><p:inputText id="cantidad" value="#{productos.cantidad}"/></f:facet>
+				              </p:cellEditor>
+				        </p:column>
+	
+						<f:facet name="footer">
+							<p:commandButton value="Agregar"
+								action="#{MBean.agregarProductoVenta()}"
+								style="margin-left: 10px;" update="contenedorProductosVenta, :formventa:factura, :formventa:messages" />
+						</f:facet>
+					</p:dataTable>
+
+					<p:dataTable id="factura"
+						style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px"
+						widgetVar="wVfactura" var="fac" value="#{MBean.getListaDetalle()}"
+						paginator="true" rows="16" paginatorPosition="bottom"
+						emptyMessage="No hay productos activos" rendered="#{MBean.activListaVenta}">
+						<f:facet name="header">
+				            Venta
+				        </f:facet>
+				        <p:columnGroup type="header">
+				            <p:row>				                
+				                <p:column colspan="3" headerText="Cliente: #{MBean.venta.cliente.nombre}"></p:column>
+				                <p:column colspan="2" headerText="Fecha: #{MBean.fechaVta.toLocaleString().substring(0,11)}" />				                
+				            </p:row>
+				            <p:row>
+				                <p:column headerText="Cantidad" />
+				                <p:column headerText="Detalle" />
+				                <p:column headerText="Precio unitario" />
+				                <p:column headerText="Subtotal" />
+				                <p:column headerText="Quitar" />
+				            </p:row>
+				        </p:columnGroup>
+						        
+				        <p:column>
+				        	<p:outputLabel value="#{fac.cantidad}"/>
+				        </p:column>
+				        <p:column>
+				        	<p:outputLabel value="#{fac.producto.nombre}"/>
+				        </p:column>
+				        <p:column>
+				        	<p:outputLabel value="$ #{fac.stringPrecioUnitario}"/>
+				        </p:column>
+				        <p:column>
+				        	<p:outputLabel value="$ #{fac.stringSubtotal}"/>
+				        </p:column>
+				        
+				        <p:column style="text-align: center;" id="ok">
+							<f:facet name="header">
+								<h:outputText value="Delete" title="Eliminar el Producto" />
+							</f:facet>						
+							<p:commandLink title="Seleccionar" action="#{MBean.onItemVentaDelete(fac)}" 
+								update="factura">							
+								<h:graphicImage value="/images/elim.png" width="20" id="delete" />
+							</p:commandLink>		
+						</p:column>	
+						        
+		                <p:columnGroup type="footer">
+				            <p:row>				                
+				                <p:column colspan="5" style="text-align:right" 
+				                footerText="Monto Total en Cuenta Corriente: $ #{MBean.venta.stringMonto}" />				                
+				            </p:row>
+				        </p:columnGroup>
+				        
+						<f:facet name="footer">								
+							<h:outputLabel value="Pago de contado: " />	
+							<p:inputText value="#{MBean.ventaCTDO}"  />
+							<p:commandButton value="Aceptar" action="#{MBean.goConfirmarVenta()}" ajax="false" update="messages" />
+							<p:commandButton value="Cancelar" onclick="return confirm('Esta seguro de cancelar la venta?')" action="#{MBean.nuevaVenta()}" ajax="false" />
+						</f:facet>
+					</p:dataTable>
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+</ui:composition>
+</html>

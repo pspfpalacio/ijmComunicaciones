@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Rubros</title>
+	</h:head>
+	<h:body>
+	<div class="wrapper">
+	<ui:include src="/includes/header.xhtml"></ui:include>
+
+			<h:form id="formrubro">
+				<ui:include src="/includes/menu.xhtml"></ui:include>
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel for="buscarEstado" value="Estado:"
+						style="font-weight:bold" />
+					<p:selectOneMenu id="buscarEstado" style="width:150px;"
+						value="#{MBean.estadoRubro}">
+						<p:ajax event="change"
+							listener="#{MBean.getRubrosXEstado(MBean.estadoRubro)}"
+							update="contenedorRubro" />
+						<f:selectItem itemLabel="Todos" itemValue="2" />
+						<f:selectItem itemLabel="Activado" itemValue="1" />
+						<f:selectItem itemLabel="Desactivado" itemValue="0" />						
+					</p:selectOneMenu>
+					
+				</h:panelGrid>
+				<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+
+				<p:dataTable id="contenedorRubro" widgetVar="rubroBusqueda" var="rubro"
+					value="#{MBean.listadoRubros}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredListadoRubros}"
+					emptyMessage="No existen Rubros" sortMode="multiple">
+					<f:facet name="header">
+						Rubros
+						<p:commandButton value="Nuevo" oncomplete="PF('dialogRubro').show();"/>
+						<p:spacer width="20" />
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('rubroBusqueda').filter()" placeholder="Buscar"/>
+						</p:outputPanel> 
+					</f:facet>
+					<p:column style="text-align: center;" id="modificar">
+						<f:facet name="header">
+							<h:outputText value="Modificar" title="Modificar el Rubro" />
+						</f:facet>
+						
+						<p:commandLink title="Modificar" action="#{MBean.onEditRubro(rubro)}" 
+							update=":formrubro:dialogoRubro" oncomplete="PF('dialogRubro').show();">							
+							<h:graphicImage value="/images/edit.ico" width="20" id="edit" />
+						</p:commandLink>
+
+					</p:column>
+					
+					<p:column style="text-align: center;" id="act_desact">
+						<f:facet name="header">
+							<h:outputText value="Act / Desact" title="Activar o Desactivar" />
+						</f:facet>
+						
+						<p:row rendered="#{rubro.enabled}">
+							<h:commandLink id="desactivar" title="Desactivar"
+								onclick="return confirm('Desea desactivar el rubro:  #{rubro.nombre}?')"
+								action="#{MBean.desactivar(rubro)}">
+							 	<h:graphicImage value="/images/desact.jpg" width="20"
+									id="estadoDesactivar" title="Desactivar el rubro" /> 
+							</h:commandLink>
+						</p:row>
+						
+						<p:row rendered="#{!rubro.enabled}">
+							<h:commandLink id="activar" title="Activar"
+								onclick="return confirm('Desea activar el rubro:  #{rubro.nombre}?')"
+								action="#{MBean.activar(rubro)}">
+								<h:graphicImage value="/images/act.jpg" width="20"
+									id="estadoActivar" title="Activar el rubro" />
+									
+							</h:commandLink>
+						</p:row>
+					</p:column>
+
+					
+					<p:column sortBy="#{rubro.nombre}" filterBy="#{rubro.nombre}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Nombre" 
+								title="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{rubro.nombre}" />
+					</p:column>
+					
+					<p:column sortBy="#{rubro.fechaAlta}" filterBy="#{rubro.fechaAlta}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Fecha de Alta" title="Fecha ALta"/>
+						</f:facet>
+						<h:outputText value="#{rubro.fechaString}" />
+					</p:column>
+										
+					<p:column sortBy="#{rubro.descripcion}" filterBy="#{rubro.descripcion}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Descripcion"
+								title="Descripción" />
+						</f:facet>
+						<h:outputText value="#{rubro.descripcion}" />
+					</p:column>
+
+				</p:dataTable>
+
+
+				<br />
+				<ui:include src="/vistas/rubros/dielogRubro.xhtml"></ui:include>
+
+			</h:form>
+		</div>
+	</h:body>
+	
+	</f:view>
+	</ui:composition>
+</html>

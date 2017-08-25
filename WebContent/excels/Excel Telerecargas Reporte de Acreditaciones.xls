@@ -1,0 +1,13 @@
+<table class="tableInfo" cellspacing="0" rules="all" border="1" id="grdRequest" style="width:240px;border-collapse:collapse;">
+	<tr class="tableHeader">
+		<td style="width:80px;">Destino Dist.</td><td style="width:100px;">Cantidad</td><td style="width:150px;">Total</td>
+	</tr><tr class="oddRow">
+		<td nowrap="nowrap" align="Left">Godoy, Hernan</td><td nowrap="nowrap" align="Right">1.00</td><td nowrap="nowrap" align="Right">8000.00</td>
+	</tr><tr class="evenRow">
+		<td nowrap="nowrap" align="Left">Guastavino, Ernesto Alfredo</td><td nowrap="nowrap" align="Right">2.00</td><td nowrap="nowrap" align="Right">20000.00</td>
+	</tr><tr class="oddRow">
+		<td nowrap="nowrap" align="Left">ISS.COM</td><td nowrap="nowrap" align="Right">3.00</td><td nowrap="nowrap" align="Right">23000.00</td>
+	</tr><tr class="evenRow">
+		<td nowrap="nowrap" align="Left">Silingardi, Julio</td><td nowrap="nowrap" align="Right">1.00</td><td nowrap="nowrap" align="Right">5000.00</td>
+	</tr>
+</table>

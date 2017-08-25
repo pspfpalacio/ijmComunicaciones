@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+
+			
+			<p:dialog header="Gestión de producto" widgetVar="dialogProducto" id="dialogP" closable="false" closeOnEscape="false">
+			<p:outputPanel id="dialogoprducto">
+   				<p:panelGrid columns="2">
+   				
+   				
+   					<h:outputLabel value="Nombre: " />
+   					<h:inputText value="#{MBean.producto.nombre}" ></h:inputText>
+   					<h:outputLabel value="Descripción:  " />
+   					<h:inputText value="#{MBean.producto.descripcion}"></h:inputText>
+   					<h:outputLabel value="Precio(Compra):  " />
+   					<h:inputText value="#{MBean.producto.precioCompra}" disabled="#{MBean.precioCompraProd}"></h:inputText>
+   					<h:outputLabel value="Precio(Nominal):  " />
+   					<h:inputText value="#{MBean.producto.precioNominal}"></h:inputText>
+   					<h:outputLabel value="Stock Mínimo:  " />
+   					<h:inputText value="#{MBean.producto.stockMinimo}"></h:inputText>
+   					<h:outputLabel value="Stock:  " />
+   					<h:inputText value="#{MBean.producto.stock}" disabled="#{MBean.stockProd}"></h:inputText>
+   					<h:outputLabel value="Rubro:  " />
+   					<p:selectOneMenu value="#{MBean.idRubroProducto}" id="comboBoxR">
+   								<f:selectItem itemLabel="Seleccione.." itemValue="0" noSelectionOption="true"/>
+								<f:selectItems value="#{MBean.listaRubro}" />
+					</p:selectOneMenu>
+   					<p:commandButton value="Guardar" action="#{MBean.guardarProducto()}" 
+   						oncomplete="PF('dialogProducto').hide()" update="messages, formproductos"/>
+   					<p:commandButton value="Cancelar" action="#{MBean.cancelarProducto()}" 
+   						oncomplete="PF('dialogProducto').hide()" update="formproductos"/>
+   					
+   				</p:panelGrid>
+   				</p:outputPanel>
+			</p:dialog>
+			
+			
+
+
+
+	</ui:composition>
+</html>

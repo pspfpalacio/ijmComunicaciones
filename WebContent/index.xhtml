@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="images/icono.ico" />
+		<link rel="stylesheet" href="/includes/estilo.css" type="text/css" />
+		<title>Inicio</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<div>
+				<img alt="HEADER" src="images/headerbanner.jpg" width="100%"/>
+			</div>
+		<h:form >
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+		    <ui:include src="/includes/menu.xhtml"></ui:include>
+		    <p:panel styleClass="panelGrid" style="margin-top:20px;">
+		    
+		    	<h1>Bienvenido <p:outputLabel value="#{MBean.nombreLogin}" /> </h1> <h2> <p:clock pattern="dd/MM/yyyy - hh:mm:ss" /> </h2>
+		    	<h2><a href="includes/manual_usuario.pdf" target="_blank" >Ayuda</a> </h2>
+		    	<p:separator />
+		    	<p:commandButton value="Proceso Saldos Clientes Proveedores" ajax="false" action="#{MBean.procesoSaldos()}" 
+		    	rendered="#{MBean.usuario.id == 1}" onclick="return confirm('DESEA EJECUTAR EL PROCESO?')"/>
+		    	<p:commandButton value="Proceso Saldos Virtuales" ajax="false" action="#{MBean.procesoSaldos1()}" 
+		    	rendered="#{MBean.usuario.id == 1}" onclick="return confirm('DESEA EJECUTAR EL PROCESO?')"/>
+		    	<p:commandButton value="Proceso Actualiza Bolsa Virtual" ajax="false" action="#{MBean.procesoSaldos2()}" 
+		    	rendered="#{MBean.usuario.id == 1}" onclick="return confirm('DESEA EJECUTAR EL PROCESO?')"/>
+		    	<p:commandButton value="Proceso Actualiza Caja" ajax="false" action="#{MBean.procesoSaldos3()}" 
+		    	rendered="#{MBean.usuario.id == 1}" onclick="return confirm('DESEA EJECUTAR EL PROCESO?')"/>
+		    </p:panel>			
+		</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

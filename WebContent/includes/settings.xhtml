@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		
+		<p:dialog header="Usuario" widgetVar="setting" id="dialogSetting" closable="false" closeOnEscape="false">
+				<p:outputPanel id="panelSetting">
+	   				<p:panelGrid columns="2">	   				
+	   					
+	   					<h:outputLabel for="nombreusuario" value="UserName: " />
+	   					<p:inputText id="nombreusuario" value="#{MBean.username}" />
+	   					<h:outputLabel for="apellidonombre" value="Apellido y Nombre: " />
+	   					<p:inputText id="apellidonombre" value="#{MBean.nombreUsuario}" />
+						<h:outputLabel value="Contraseña: " for="contrasenia"/>
+						<p:password id="contrasenia" value="#{MBean.newPass}" >
+							<p:ajax event="keyup" update="texto" listener="#{MBean.handleKeyEvent()}"/>
+						</p:password>
+						<h:outputLabel value="Confirmar Contraseña: " for="confirmcontrasenia"/>
+						<p:column>
+							<p:password id="confirmcontrasenia" value="#{MBean.confirmNewPass}">
+					    		<p:ajax event="keyup" update="texto" listener="#{MBean.handleKeyEvent()}"/>
+					    	</p:password>
+					    	<h:outputText id="texto" value="#{MBean.textOK}"  />
+				    	</p:column>
+				    	<h:outputLabel for="rolee" value="Rol: " />
+				    	<p:selectOneMenu id="rolee" label="Rol" value="#{MBean.idRolUsuario}" 
+				    		style="width:200px;" disabled="#{MBean.disabledRolUser}">
+				    		<p:ajax event="change" update="rolee" />
+				    		<f:selectItem itemLabel="Seleccione.." itemValue="0" />
+				    		<f:selectItems value="#{MBean.listRolesUser}" var="rol" itemLabel="#{rol.nombre}"
+				    			itemValue="#{rol.id}"/>
+				    	</p:selectOneMenu>
+	   					<p:commandButton value="Guardar" action="#{MBean.agregarUsuario()}" 
+	   						oncomplete="PF('setting').hide()" update="messages" process="@this"/>
+	   					<p:commandButton value="Cancelar" action="#{MBean.cancelarUsuario()}" 
+	   						oncomplete="PF('setting').hide()" update="panelSetting" process="@this"/>
+	   					
+	   				</p:panelGrid>
+   				</p:outputPanel>
+			</p:dialog>
+	</ui:composition>
+</html>

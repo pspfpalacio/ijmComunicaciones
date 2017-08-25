@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Pedidos y Compras</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formcompra">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<p:panelGrid id="grid" columns="4" style="width: 100%;">
+						<f:facet name="header">
+									Pedidos y Compras
+								</f:facet>
+			
+				<h:outputLabel for="proveedor" value="Proveedor: " />
+				<p:selectOneMenu id="proveedor" value="#{MBean.idProveedorPedidos}" panelStyle="width:180px"
+                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains" >
+                    <p:ajax event="change" listener="#{MBean.onProveedorPedidosCheck}" update="pedidos" />
+                    <f:selectItem itemLabel="Todos" itemValue="0"/>
+		            <f:selectItems value="#{MBean.listaProveedoresPedidos}" var="proveedor" 
+		            	itemLabel="#{proveedor.nombre}" itemValue="#{proveedor.id}" />
+		        </p:selectOneMenu>
+		        <h:outputLabel for="estado" value="Estado: " />
+				<p:selectOneMenu id="estado" value="#{MBean.estadoPedidos}" panelStyle="width:180px"
+                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains" >
+                    <p:ajax event="change" listener="#{MBean.onProveedorPedidosCheck}" update="pedidos" />
+                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                    <f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
+                    <f:selectItem itemLabel="Confirmados" itemValue="Confirmado"/>
+                    <f:selectItem itemLabel="Cancelados" itemValue="Cancelado"/>
+		        </p:selectOneMenu>
+		     </p:panelGrid>
+		     <p:panelGrid columns="1" style="width: 100%; text-align:center;">
+		     				    <p:row>
+				    	<p:calendar value="#{MBean.inicioPedidos}" id="popup1"/>
+				    	<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" action="#{MBean.onProveedorPedidosCheck()}" ajax="false" update="pedidos"/>
+				    	<p:calendar value="#{MBean.finalPedidos}" id="popup2"/>
+				    </p:row>
+				    </p:panelGrid>
+		     <p:panelGrid id="panelGrid" columns="1" style="width:100%;" >
+		        <p:dataTable id="pedidos" var="pedidos" value="#{MBean.listaPedidos}"  widgetVar="buscarPedidos" 
+		        	emptyMessage="No existen Pedidos" sortMode="multiple" filteredValue="#{MBean.filteredPedidos}"
+		        	style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px"
+		        	paginator="true" rows="16" resizableColumns="true" paginatorPosition="bottom">
+			       <f:facet name="header">
+			           	<h:outputText value="Pedidos" style="height: 20px;"/>
+						<p:spacer width="20" />
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('buscarPedidos').filter()" placeholder="Buscar" style="height:17px; font-size:samller;"/>
+						</p:outputPanel>
+						
+											<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.reporteCompraVenta('Compras')}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+			       </f:facet>
+			       
+			       <p:column style="text-align: center;" id="ok">
+						<f:facet name="header">
+							<h:outputText value="Conf." title="Confirmar el Pedido" />
+						</f:facet>						
+						<h:commandLink title="Confirmar" action="#{MBean.onConfPedido(pedidos)}" 
+							onclick="return confirm('Desea confirmar el pedido?')"
+							type="submit" disabled="#{pedidos.estadoConf}">					
+							<h:graphicImage value="/images/ok.png" width="20" id="oka" />
+						</h:commandLink>
+						<p:rowToggler />
+					</p:column>	
+			       
+			       <p:column style="text-align: center;" id="notok">
+						<f:facet name="header">
+							<h:outputText value="Baja" title="Baja" />
+						</f:facet>						
+						<h:commandLink title="Baja Pedido" action="#{MBean.onCancelPedido(pedidos)}" 
+							onclick="return confirm('Desea cancelar el pedido?')"
+							type="submit" disabled="#{pedidos.estadoCancel}" rendered="#{!pedidos.estadoCancel1}">							
+							<h:graphicImage value="/images/elim.png" width="20" id="elim" />
+						</h:commandLink>
+						<h:commandLink title="Baja Compra" action="#{MBean.onBajaCompra(pedidos)}"
+							onclick="return confirm('Desea cancelar la compra?')"
+							type="submit" disabled="#{!pedidos.enabled}" rendered="#{pedidos.estadoCancel1}">							
+							<h:graphicImage value="/images/elim.png" width="20" id="elim2" />
+						</h:commandLink>
+					</p:column>	
+			       
+			       <p:column style="text-align: center;" id="seleccionar">
+						<f:facet name="header">
+							<h:outputText value="Seleccionar" title="Seleccionar el Pedido" />
+						</f:facet>						
+						<h:commandLink title="Seleccionar" action="#{MBean.onEditPedido(pedidos)}" 
+							type="submit" disabled="#{pedidos.estadoEdit}">							
+							<h:graphicImage value="/images/edit.ico" width="20" id="check" />
+						</h:commandLink>
+					</p:column>				      
+			       
+			       <p:column sortBy="#{pedidos.fechaAlta}" filterBy="#{pedidos.fechaAlta}"
+			       		filterMatchMode="contains" filterStyle="display:none;">
+			       		<f:facet name="header">
+			       			<h:outputText value="Fecha de Pedido" title="Fecha"/>
+			       		</f:facet>
+			       		<h:outputText value="#{pedidos.fechaString}" />
+			       </p:column>
+			 
+			       <p:column sortBy="#{pedidos.cliente.nombre}" filterBy="#{pedidos.cliente.nombre}"
+			       		filterMatchMode="contains" filterStyle="display:none;">
+			       		<f:facet name="header">
+			       			<h:outputText value="Proveedor" title="Proveedor" />
+			       		</f:facet>
+			            <h:outputText value="#{pedidos.cliente.nombre}" />
+			       </p:column>
+			       
+			       <p:column sortBy="#{pedidos.usuario1.username}" filterBy="#{pedidos.usuario1.username}"
+			       		filterMatchMode="contains" filterStyle="display:none;">
+			       		<f:facet name="header">
+			       			<h:outputText value="Usuario" title="Usuario" />
+			       		</f:facet>
+			            <h:outputText value="#{pedidos.usuario1.username}" />
+			       </p:column>
+			       
+			       <p:column sortBy="#{pedidos.montoString}" filterBy="#{pedidos.montoString}"
+			       		filterMatchMode="contains" filterStyle="display:none;">
+			       		<f:facet name="header">
+			       			<h:outputText value="Monto de la Compra" title="Monto" />
+			       		</f:facet>
+			              <h:outputText value="$#{pedidos.montoString}" />
+			       </p:column>
+			       
+			       <p:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="Estado"
+								title="Estado" />
+						</f:facet>
+						<p:row rendered="#{pedidos.estado.equals('Confirmado')}">
+							<h:graphicImage value="/images/ok.png" width="20"
+								id="estadoConfirmado" title="Confirmado" />
+						</p:row>
+						<p:row rendered="#{pedidos.estado.equals('Cancelado')}">
+							<h:graphicImage value="/images/elim.png" width="20"
+								id="estadoCancelado" title="Cancelado" />
+						</p:row>
+						<p:row rendered="#{pedidos.estado.equals('Pendiente')}">
+							<h:graphicImage value="/images/cancel.ico" width="20"
+								id="estadoPendiente" title="Pendiente" />
+						</p:row>
+					</p:column>	
+					
+					<p:rowExpansion>
+						<p:panelGrid  columns="1" columnClasses="label,value" style="width:100%">
+			                <f:facet name="header">
+			                    Detalle
+			                </f:facet>
+
+									<p:dataList value="#{pedidos.detalleDeCompra}" var="detalles" >
+										<p:column>
+											<h:outputText value="   Producto: #{detalles.producto.nombre}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="   -   Cantidad: #{detalles.cantidad}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="   -   Precio Unitario: #{detalles.precioString}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="   -   Subtotal: #{detalles.subtotalString}" />
+										</p:column>
+									</p:dataList>							
+						</p:panelGrid>
+					</p:rowExpansion>
+			          
+			   </p:dataTable>
+			   
+			</p:panelGrid>
+			
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

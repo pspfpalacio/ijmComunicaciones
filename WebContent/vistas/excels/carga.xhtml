@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<title>Carga de archivos Excel</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+
+
+				<h:form id="formulario" enctype="multipart/form-data">
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" showDetail="true" />
+					<p:panelGrid id="panel" styleClass="panelGrid" style="width:100%">
+						<f:facet name="header">
+							<p:row>
+								<p:column colspan="1">Cta Cte IJM</p:column>
+								<p:column colspan="1">Stock</p:column>
+								<p:column colspan="1">Ventas</p:column>
+							</p:row>
+						</f:facet>
+						<p:row>
+						<p:column>
+							<h:commandLink value="#{MBean.archivoUno.ctacte}" disabled="#{MBean.ctacteUno == null}">								
+								<p:fileDownload value="#{MBean.ctacteUno}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoDos.ctacte}" disabled="#{MBean.ctacteDos == null}">								
+								<p:fileDownload value="#{MBean.ctacteDos}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoTres.ctacte}" disabled="#{MBean.ctacteTres == null}">								
+								<p:fileDownload value="#{MBean.ctacteTres}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoCuatro.ctacte}" disabled="#{MBean.ctacteCuatro == null}">
+								<p:fileDownload value="#{MBean.ctacteCuatro}" />
+							</h:commandLink>
+							<br/>
+							<p:fileUpload fileUploadListener="#{MBean.uploadExcelUno}"
+								mode="advanced" id="uploaduno" dragDropSupport="true"
+								label="Seleccione" cancelLabel="Cancelar" uploadLabel="Subir" 
+								style="margin-top: 20px;" update="panel, messages"
+								fileLimit="1" allowTypes="/(\.|\/)(xls|csv|xlsx)$/"
+								invalidFileMessage="El tipo de archivo no es válido"  />
+						</p:column>
+						
+						<p:column>
+							<h:commandLink value="#{MBean.archivoUno.stock}" disabled="#{MBean.stocksUno == null}">								
+								<p:fileDownload value="#{MBean.stocksUno}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoDos.stock}" disabled="#{MBean.stocksDos == null}">								
+								<p:fileDownload value="#{MBean.stocksDos}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoTres.stock}" disabled="#{MBean.stocksTres == null}">								
+								<p:fileDownload value="#{MBean.stocksTres}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoCuatro.stock}" disabled="#{MBean.stocksCuatro == null}">
+								<p:fileDownload value="#{MBean.stocksCuatro}" />
+							</h:commandLink>
+							<br/>
+							<p:fileUpload fileUploadListener="#{MBean.uploadExcelDos}"
+								mode="advanced" id="uploaddos" dragDropSupport="true"
+								label="Seleccione" cancelLabel="Cancelar" uploadLabel="Subir" 
+								style="margin-top: 20px;" update="panel, messages"
+								fileLimit="1" allowTypes="/(\.|\/)(xls|csv|xlsx)$/"
+								invalidFileMessage="El tipo de archivo no es válido"  />
+						</p:column>
+						
+						<p:column>
+							<h:commandLink value="#{MBean.archivoUno.ventas}" disabled="#{MBean.ventasUno == null}">								
+								<p:fileDownload value="#{MBean.ventasUno}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoDos.ventas}" disabled="#{MBean.ventasDos == null}">								
+								<p:fileDownload value="#{MBean.ventasDos}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoTres.ventas}" disabled="#{MBean.ventasTres == null}">								
+								<p:fileDownload value="#{MBean.ventasTres}" />
+							</h:commandLink>
+							<br/>
+							<br/>
+							<h:commandLink value="#{MBean.archivoCuatro.ventas}" disabled="#{MBean.ventasCuatro == null}">								
+								<p:fileDownload value="#{MBean.ventasCuatro}" />
+							</h:commandLink>
+							<br/>
+							<p:fileUpload fileUploadListener="#{MBean.uploadExcelTres}"
+								mode="advanced" id="uploadtres" dragDropSupport="true"
+								label="Seleccione" cancelLabel="Cancelar" uploadLabel="Subir" 
+								style="margin-top: 20px;" update="panel, messages"
+								fileLimit="1" allowTypes="/(\.|\/)(xls|csv|xlsx)$/"
+								invalidFileMessage="El tipo de archivo no es válido"  />
+						</p:column>
+						</p:row>
+					</p:panelGrid>
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+</ui:composition>
+</html>

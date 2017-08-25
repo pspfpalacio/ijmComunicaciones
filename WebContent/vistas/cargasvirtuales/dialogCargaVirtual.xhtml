@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+
+	<p:dialog header="Gestión de Carga Virtual" widgetVar="dialogCargaVirtual"
+		id="dialogCV" closable="false" closeOnEscape="false">
+		<p:outputPanel id="dialogocarga">
+			<p:panelGrid columns="2">
+
+
+				<h:outputLabel value="Nombre: " />
+				<h:inputText value="#{MBean.cargaVirtual.nombre}" disabled="true"></h:inputText>
+				<h:outputLabel value="Tipo: " />
+				<p:selectOneMenu id="select" value="#{MBean.tipoCV}" >
+					<f:selectItem itemLabel="Mas" itemValue="1"/>
+					<f:selectItem itemLabel="Menos" itemValue="2"/>
+				</p:selectOneMenu>
+				<h:outputLabel value="Cantidad/Monto:  " />
+				<h:inputText value="#{MBean.cantidadMontoCV}"></h:inputText>
+				<h:outputLabel value="Concepto: " />
+				<h:inputTextarea value="#{MBean.conceptoCV}" cols="40" rows="2" autoResize="true"/>
+				
+				<p:commandButton value="Guardar" action="#{MBean.guardarCarga()}"
+					oncomplete="PF('dialogCargaVirtual').hide()"
+					update="messages, formcargas" />
+				<p:commandButton value="Cancelar"
+					action="#{MBean.cancelarCarga()}"
+					oncomplete="PF('dialogCargaVirtual').hide()" update="formcargas" />
+
+			</p:panelGrid>
+		</p:outputPanel>
+	</p:dialog>
+
+</ui:composition>
+</html>

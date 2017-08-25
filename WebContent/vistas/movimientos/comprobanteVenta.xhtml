@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Comprobante de ventas</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formcomprobanteventa">
+					<p:panelGrid columns="4" style="width: 100%" >
+						<f:facet name="header">
+							<p:outputLabel value="Venta" />
+						</f:facet>
+						
+						<p:outputLabel value="Número de Venta: " />
+						<p:outputLabel value="#{MBean.nroVenta}" />
+						
+						<p:outputLabel value="Fecha: " />
+						<p:outputLabel value="#{MBean.venta.fecha}" >
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:outputLabel>
+						
+						<p:outputLabel value="Cliente(Apellido y Nombre): " />
+						<p:outputLabel value="#{MBean.venta.cliente.apellido}" />
+						
+						<p:outputLabel value="Cliente(Negocio): " />
+						<p:outputLabel value="#{MBean.venta.cliente.nombre}" />
+						
+						<p:outputLabel value="Domicilio: " />
+						<p:outputLabel value="#{MBean.venta.cliente.direccion}" />
+						
+						<p:outputLabel value="www.ijmcomunicaciones.com.ar" />
+						<p:outputLabel value="#{MBean.currentDate}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Argentina/Buenos_Aires"/>
+						</p:outputLabel>
+						
+					</p:panelGrid>
+						
+					<p:dataTable id="factura" style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px"
+						var="fac" value="#{MBean.getListaDetalle()}" rendered="#{MBean.activListaVenta}"
+						resizableColumns="true" scrollable="true" scrollHeight="300">
+						<f:facet name="header">
+				            Detalle de Venta
+				        </f:facet>						
+
+						<p:column headerText="Cantidad" style="width:100px;text-align: center;">
+							<h:outputText value="#{fac.cantidad}" />
+						</p:column>
+						<p:column headerText="Producto">
+							<h:outputText value="#{fac.producto.nombre}" />
+						</p:column>
+						<p:column headerText="Precio Unitario" style="width:150px;text-align: right;">
+							<h:outputText value="$ #{fac.precioString}" />
+						</p:column>
+						<p:column headerText="Subtotal" style="width:300px;text-align: right;">
+							<h:outputText value="$ #{fac.subtotalString}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText value="Pago contado: $#{MBean.pagoEfectivo} - Monto Total de Venta: $#{MBean.venta.montoString}" />
+						</f:facet>
+					</p:dataTable>
+					
+				</h:form>
+				<h:panelGrid columns="2">			
+					<h:form target="_blank">						
+							<p:commandButton action="#{MBean.confirmarVenta()}" 
+							onclick="return confirm('Esta seguro que desea Guardar y Generar Comprobante de la Venta?')"
+									value="Guardar y Generar Comprobante" ajax="false"></p:commandButton>	
+					</h:form>
+					<h:form id="formButton">
+						<p:commandButton value="Volver" action="venta"></p:commandButton>
+					</h:form>
+				</h:panelGrid>
+			</div>
+			
+				
+		</h:body>
+	</f:view>
+
+
+
+</ui:composition>
+</html>

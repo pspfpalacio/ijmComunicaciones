@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Cuenta Corriente IJM Comunicaciones</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formCC">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<h:panelGrid columns="1" style="width:100%; margin_top:20px;">
+				<p:outputLabel value="Cuenta corriente - Ingresos y Egresos" />
+				<p:outputLabel value="IJM Comunicaciones" />
+			</h:panelGrid>
+			<p:panelGrid columns="1" style="width:100%; text-align:center;">
+			<p:row>
+		    	<p:calendar value="#{MBean.inicioCCIJM}" id="popup1"/>
+		    	<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" action="#{MBean.onfilteredDateCC()}" ajax="false" update="contenedorCuCo"/>
+		    	<p:calendar value="#{MBean.finalCCIJM}" id="popup2"/>
+		    </p:row>
+			</p:panelGrid>
+			<p:dataTable id="contenedorCuCo" widgetVar="cucoBusqueda" var="cuco"
+					value="#{MBean.listaCuentasCorrienteIJM}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredListadoCCIJM}" pageOnly="true"					
+					emptyMessage="No existen Registros" sortMode="multiple" rowsPerPageTemplate="10, 20, 30">
+				<f:facet name="header">					
+					<p:outputLabel style="text-align: rigth;" value="IJM Comunicaciones" />
+					<p:outputLabel value=", " />
+					<p:outputLabel value="Movimientos hasta la fecha: #{MBean.cantidadCC}" />
+					
+					
+					<p:outputPanel style="float:right;">
+						<p:inputText id="globalFilter" onkeyup="PF('cucoBusqueda').filter()" placeholder="Buscar" style="height:17px; font-size:samller;"/>
+					</p:outputPanel> 
+					
+					<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.imprimirReporteIJM()}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+				</f:facet>
+				
+				<p:column sortBy="#{cuco.fechaAlta}" filterBy="#{cuco.fechaAlta}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Fecha" 
+							title="Fecha"/>
+					</f:facet>
+					<h:outputText value="#{cuco.fechaString}" />
+				</p:column>
+				
+				<p:column sortBy="#{cuco.tipoMovimiento}" filterBy="#{cuco.tipoMovimiento}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Movimiento" 
+							title="Movimiento" />
+					</f:facet>
+					<h:outputText value="#{cuco.tipo}" />
+				</p:column>					
+				
+				<p:column sortBy="#{cuco.usuario.username}" filterBy="#{cuco.usuario.username}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Usuario"
+							title="Usuario" />
+					</f:facet>
+					<h:outputText value="#{cuco.usuario.username}" />
+				</p:column>
+				
+				<p:column sortBy="#{cuco.monto}" filterBy="#{cuco.monto}" 
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Monto"
+							title="Monto" />
+					</f:facet>
+					<h:outputText value="$#{cuco.montoString}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Ver Detalle" title="Ver"/>
+					</f:facet>
+					<p:commandButton action="#{MBean.onViewDetCC(cuco)}" icon="ui-icon-search" 
+							style="width: 30px; height: 30px;" ajax="false" disabled="#{cuco.estadoItem}"/>
+				</p:column>
+				
+				<f:facet name="footer">
+					<h:outputText value="Importe Total: $ #{MBean.montoTotalCCString}" />
+				</f:facet>				
+			</p:dataTable>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

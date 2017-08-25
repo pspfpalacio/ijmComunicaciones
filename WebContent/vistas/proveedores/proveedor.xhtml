@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />	
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Proveedores</title>
+	</h:head>
+	<h:body>
+	<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			<h:form id="formprov">
+				<ui:include src="/includes/menu.xhtml"></ui:include>
+				<br/>
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel for="buscarEstado" value="Estado:"
+						style="font-weight:bold" />
+					<p:selectOneMenu id="buscarEstado" style="width:150px;"
+						value="#{MBean.estadoProveedor}">
+						<p:ajax event="change"
+							listener="#{MBean.getProveedoresXEstado(MBean.estadoProveedor)}"
+							update="contenedor" />
+						<f:selectItem itemLabel="Todos" itemValue="2" />
+						<f:selectItem itemLabel="Activado" itemValue="1" />
+						<f:selectItem itemLabel="Desactivado" itemValue="0" />						
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+
+				<p:dataTable id="contenedor" widgetVar="busquedaProveedor" var="proveedor"
+					value="#{MBean.proveedores}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredProveedores}"
+					emptyMessage="No existen Proveedores" sortMode="multiple">
+					<f:facet name="header">
+						Proveedores
+						<p:commandButton value="Nuevo" oncomplete="PF('dialogProveedor').show();"/>
+						<p:spacer width="20" />
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('busquedaProveedor').filter()" placeholder="Buscar"/>
+						</p:outputPanel> 
+					</f:facet>
+					<p:column style="text-align: center;" id="modificar">
+						<f:facet name="header">
+							<h:outputText value="Modificar" title="Modificar el Proveedor" />
+						</f:facet>
+						<p:commandLink title="Modificar" action="#{MBean.onEditProveedor(proveedor)}" 
+							update=":formprov:panelProveedor" oncomplete="PF('dialogProveedor').show();">							
+							<h:graphicImage value="/images/edit.ico" width="20" id="edit" />
+						</p:commandLink>
+					</p:column>
+					
+					<p:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="Cuenta Corriente" title="CC"/>
+						</f:facet>
+						<p:commandButton action="#{beanCuenta.goCuentaCorriente(proveedor, 'proveedor')}" icon="ui-icon-contact" 
+							style="width: 30px; height: 30px;" ajax="false"/>
+					</p:column>
+					
+					<p:column style="text-align: center;" id="act_desact">
+						<f:facet name="header">
+							<h:outputText value="Act / Desact" title="Activar o Desactivar" />
+						</f:facet>
+						
+						<p:row rendered="#{proveedor.enabled}">
+							<h:commandLink id="desactivar" title="Desactivar"
+								onclick="return confirm('Desea desactivar el proveedor:  #{proveedor.nombre}   #{proveedor.apellido}?')"
+								action="#{MBean.desactivarP(proveedor)}">
+							 	<h:graphicImage value="/images/desact.jpg" width="20"
+									id="estadoDesactivar" title="Desactivar el Proveedor" /> 
+							</h:commandLink>
+						</p:row>
+						
+						<p:row rendered="#{!proveedor.enabled}">
+							<h:commandLink id="activar" title="Activar"
+								onclick="return confirm('Desea activar el Proveedor:  #{proveedor.nombre}     #{proveedor.apellido}?')"
+								action="#{MBean.activarP(proveedor)}">
+								<h:graphicImage value="/images/act.jpg" width="20"
+									id="estadoActivar" title="Activar el Proveedor" />
+							</h:commandLink>
+						</p:row>
+					</p:column>
+
+					<p:column sortBy="#{proveedor.apellido}" filterBy="#{proveedor.apellido}"
+						filterMatchMode="contains" filterStyle="display:none;" headerText="Apellido y Nombre">
+						
+						<h:outputText value="#{proveedor.apellido}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.nombre}" filterBy="#{proveedor.nombre}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Negocio" 
+								title="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{proveedor.nombre}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.direccion}" filterBy="#{proveedor.direccion}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Dirección"
+								title="Dirección" />
+						</f:facet>
+						<h:outputText value="#{proveedor.direccion}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.telefono}" filterBy="#{proveedor.telefono}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Teléfono"
+								title="Teléfono" />
+						</f:facet>
+						<h:outputText value="#{proveedor.telefono}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.fechaAlta}" filterBy="#{proveedor.fechaAlta}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Fecha de Alta" title="Fecha Alta" />
+						</f:facet>
+						<h:outputText value="#{proveedor.fechaString}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.mail}" filterBy="#{proveedor.mail}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="E-mail"
+								title="E-mail" />
+						</f:facet>
+						<h:outputText value="#{proveedor.mail}" />
+					</p:column>
+					
+					<p:column sortBy="#{proveedor.saldo}" filterBy="#{proveedor.saldo}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Saldo"
+								title="Saldo" />
+						</f:facet>
+						<h:outputText value="$#{proveedor.saldoString}" />
+					</p:column>				
+
+				</p:dataTable>
+
+
+				<br />
+				<ui:include src="/vistas/proveedores/dialogProveedor.xhtml"></ui:include>
+
+			</h:form>
+		</div>
+	</h:body>
+	
+	</f:view>
+	</ui:composition>
+</html>

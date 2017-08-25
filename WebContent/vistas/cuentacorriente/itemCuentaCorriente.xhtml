@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Cuenta Corriente</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formItemCC">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<h:panelGrid columns="3" style="width:70%; margin_top:20px;" rendered="#{MBean.ventaCuCo}">
+				<f:facet name="header">
+					<p:outputLabel value="Venta" />
+				</f:facet>
+				<p:outputLabel value="Numero: " />
+				<p:outputLabel value="#{MBean.ventaCCNro}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Fecha: " />
+				<p:outputLabel value="#{MBean.ventaCCFecha}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Apellido y Nombre: " />
+				<p:outputLabel value="#{MBean.ventaCCApellido}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Nombre de Negocio: " />
+				<p:outputLabel value="#{MBean.ventaCCNombre}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Direccion: " />
+				<p:outputLabel value="#{MBean.ventaCCDireccion}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Estado: " />
+				<p:outputLabel value="#{MBean.ventaCCEstado}" />
+				<p:outputLabel value="" />
+			</h:panelGrid>
+			<p:dataTable id="contCC" var="vent"
+				value="#{MBean.listVentasProductosCC}" paginator="true" rows="16" resizableColumns="true"
+				paginatorPosition="bottom" pageOnly="true" rendered="#{MBean.ventaCuCo}"		
+				emptyMessage="No existen Registros" sortMode="multiple">
+				
+				<f:facet name="header">						
+					<p:outputLabel style="text-align: rigth;" value="Detalle de Venta" />
+				</f:facet>					
+				
+				<p:column sortBy="#{vent.cantidad}" filterBy="#{vent.cantidad}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Cantidad" 
+							title="Cantidad"/>
+					</f:facet>
+					<h:outputText value="#{vent.cantidad}" />
+				</p:column>
+				
+				<p:column sortBy="#{vent.prod}" filterBy="#{vent.prod}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Producto" 
+							title="Producto" />
+					</f:facet>
+					<h:outputText value="#{vent.prod}" />
+				</p:column>					
+				
+				<p:column sortBy="#{vent.stringPrecioUnitario}" filterBy="#{vent.stringPrecioUnitario}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Precio Unitario"
+							title="Precio Unitario" />
+					</f:facet>
+					<h:outputText value="$#{vent.stringPrecioUnitario}" />
+				</p:column>
+				
+				<p:column sortBy="#{vent.stringSubtotal}" filterBy="#{vent.stringSubtotal}" 
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Subtotal"
+							title="Subtotal" />
+					</f:facet>
+					<h:outputText value="$#{vent.stringSubtotal}" />
+				</p:column>
+				
+				<f:facet name="footer">
+					<h:outputText value="Total: $ #{MBean.ventaCCMonto}" />
+				</f:facet>
+
+			</p:dataTable>
+			<p:panelGrid columns="2" style="width:100%; margin_top:20px;" rendered="#{MBean.pagoCuCo}">
+				<f:facet name="header">
+					<p:outputLabel value="Pago" />
+				</f:facet>
+				<p:outputLabel value="Numero: " />
+				<p:outputLabel value="#{MBean.pagoCCNro}" />
+				<p:outputLabel value="Fecha: " />
+				<p:outputLabel value="#{MBean.pagoCCFecha}" />
+				<p:outputLabel value="Apellido y Nombre(Emisor): " />
+				<p:outputLabel value="#{MBean.pagoCCApellido2}" />
+				<p:outputLabel value="Apellido y Nombre(Receptor): " />
+				<p:outputLabel value="#{MBean.pagoCCApellido1}" />	
+				<p:outputLabel value="Monto: " />
+				<p:outputLabel value="$#{MBean.pagoCCMonto}" />
+				<p:outputLabel value="Descripción: " />
+				<p:outputLabel value="#{MBean.pagoCCDescripcion}" />
+			</p:panelGrid>
+			<h:panelGrid columns="3" style="width:70%; margin_top:20px;" rendered="#{MBean.compraCuCo}">
+				<f:facet name="header">
+					<p:outputLabel value="Compra" />
+				</f:facet>
+				<p:outputLabel value="Numero: " />
+				<p:outputLabel value="#{MBean.compraCCNro}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Fecha: " />
+				<p:outputLabel value="#{MBean.compraCCFecha}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Apellido y Nombre: " />
+				<p:outputLabel value="#{MBean.compraCCApellido}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Nombre de Negocio: " />
+				<p:outputLabel value="#{MBean.compraCCNombre}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Direccion: " />
+				<p:outputLabel value="#{MBean.compraCCDireccion}" />
+				<p:outputLabel value="" />
+			</h:panelGrid>
+			<p:dataTable id="compCC" var="comp"
+				value="#{MBean.listCompraDetalleCC}" paginator="true" rows="16" resizableColumns="true"
+				paginatorPosition="bottom" pageOnly="true" rendered="#{MBean.compraCuCo}"		
+				emptyMessage="No existen Registros" sortMode="multiple">
+				
+				<f:facet name="header">						
+					<p:outputLabel style="text-align: rigth;" value="Detalle de Compra" />
+				</f:facet>					
+				
+				<p:column sortBy="#{comp.cantidad}" filterBy="#{comp.cantidad}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Cantidad" 
+							title="Cantidad"/>
+					</f:facet>
+					<h:outputText value="#{comp.cantidad}" />
+				</p:column>
+				
+				<p:column sortBy="#{comp.producto.nombre}" filterBy="#{comp.producto.nombre}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Producto" 
+							title="Producto" />
+					</f:facet>
+					<h:outputText value="#{comp.producto.nombre}" />
+				</p:column>					
+				
+				<p:column sortBy="#{comp.precioString}" filterBy="#{comp.precioString}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Precio Unitario"
+							title="Precio Unitario" />
+					</f:facet>
+					<h:outputText value="$#{comp.precioString}" />
+				</p:column>
+				
+				<p:column sortBy="#{comp.subtotalString}" filterBy="#{comp.subtotalString}" 
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Subtotal"
+							title="Subtotal" />
+					</f:facet>
+					<h:outputText value="$#{comp.subtotalString}" />
+				</p:column>
+				
+				<f:facet name="footer">
+					<h:outputText value="Total: $ #{MBean.compraCCMonto}" />
+				</f:facet>
+
+			</p:dataTable>
+			<h:panelGrid columns="3" style="width:70%; margin_top:20px;" rendered="#{MBean.notaCredCuCo}">
+				<f:facet name="header">
+					<p:outputLabel value="Nota de Crédito" />
+				</f:facet>
+				<p:outputLabel value="Número: " />
+				<p:outputLabel value="#{MBean.notaCredCCNro}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Fecha: " />
+				<p:outputLabel value="#{MBean.notaCredCCFecha}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Número de Venta: " />
+				<p:outputLabel value="#{MBean.notaCredCCNroVenta}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Fecha Venta: " />
+				<p:outputLabel value="#{MBean.notaCredCCFechaVenta}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Apellido y Nombre: " />
+				<p:outputLabel value="#{MBean.notaCredCCApellido}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Nombre de Negocio: " />
+				<p:outputLabel value="#{MBean.notaCredCCNombre}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="Dirección: " />
+				<p:outputLabel value="#{MBean.notaCredCCDireccion}" />
+				<p:outputLabel value="" />
+			</h:panelGrid>
+			<p:dataTable id="notaCC" var="nota"
+				value="#{MBean.listNotaCredCCDetVent}" paginator="true" rows="16" resizableColumns="true"
+				paginatorPosition="bottom" pageOnly="true" rendered="#{MBean.notaCredCuCo}"		
+				emptyMessage="No existen Registros" sortMode="multiple">
+				
+				<f:facet name="header">						
+					<p:outputLabel style="text-align: rigth;" value="Detalle de Venta" />
+				</f:facet>					
+				
+				<p:column sortBy="#{nota.cantidad}" filterBy="#{nota.cantidad}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Cantidad" 
+							title="Cantidad"/>
+					</f:facet>
+					<h:outputText value="#{nota.cantidad}" />
+				</p:column>
+				
+				<p:column sortBy="#{nota.producto.nombre}" filterBy="#{nota.producto.nombre}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Producto" 
+							title="Producto" />
+					</f:facet>
+					<h:outputText value="#{nota.producto.nombre}" />
+				</p:column>					
+				
+				<p:column sortBy="#{nota.stringPrecioUnitario}" filterBy="#{nota.stringPrecioUnitario}"
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Precio Unitario"
+							title="Precio Unitario" />
+					</f:facet>
+					<h:outputText value="$#{nota.stringPrecioUnitario}" />
+				</p:column>
+				
+				<p:column sortBy="#{nota.stringSubtotal}" filterBy="#{nota.stringSubtotal}" 
+					filterMatchMode="contains" filterStyle="display:none;">
+					<f:facet name="header">
+						<h:outputText value="Subtotal"
+							title="Subtotal" />
+					</f:facet>
+					<h:outputText value="$#{nota.stringSubtotal}" />
+				</p:column>
+				
+				<f:facet name="footer">
+					<h:outputText value="Total: $ #{MBean.notaCredCCMontoVenta}" />
+				</f:facet>
+
+			</p:dataTable>
+			<p:panelGrid columns="2" style="width:100%; margin_top:20px;" rendered="#{MBean.compraCVCuCo}">
+				<f:facet name="header">
+					<p:outputLabel value="Compra Virtual" />
+				</f:facet>
+				<p:outputLabel value="Numero: " />
+				<p:outputLabel value="#{MBean.compraCargaVirtualCuCo.id}" />
+				<p:outputLabel value="Fecha: " />
+				<p:outputLabel value="#{MBean.compraCargaVirtualCuCo.fechaString}" />
+				<p:outputLabel value="Plataforma: " />
+				<p:outputLabel value="#{MBean.compraCargaVirtualCuCo.cargaVirtual.nombre}" />
+				<p:outputLabel value="Monto: " />
+				<p:outputLabel value="$#{MBean.compraCargaVirtualCuCo.cantidadMontoString}" />
+			</p:panelGrid>
+			<h:panelGrid columns="1" style="width:100%; margin_top:20px;">
+				<p:commandButton value="Volver" action="#{MBean.volverACC()}" />
+			</h:panelGrid>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

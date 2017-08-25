@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Compras</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formcompra">
+				<ui:include src="/includes/menu.xhtml"></ui:include>
+				<p:panelGrid columns="2" style="width: 100%;">
+					<p:outputLabel value="Proveedor (Apellido y Nombre): " style="font-weight:bold;"/>
+					<p:inputText value="#{MBean.compra.cliente.apellido}" disabled="true"/>
+					
+					<p:outputLabel value="Proveedor (Negocio): " style="font-weight:bold;"/>
+					<p:inputText value="#{MBean.compra.cliente.nombre}" disabled="true"/>
+					
+					<p:outputLabel value="Fecha: " style="font-weight:bold;"/>
+					<p:inputText value="#{MBean.compra.fechaString}" disabled="true"/>
+				</p:panelGrid>
+				<p:separator></p:separator>
+				<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+				<p:panelGrid columns="2" style="width: 100%;">
+					<f:facet name="header">
+						<p:outputLabel value="Agregar Productos a la compra: " style="font-weight:bold;"/>
+					</f:facet>
+					
+					<p:outputLabel value="Productos: " style="font-weight:bold;"/>
+					<p:selectOneMenu value="#{MBean.idProductoPedidos}" filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel="Ninguno" itemValue="0"/>
+						<f:selectItems value="#{MBean.productosListaPedidos}" var="product"
+							itemLabel="#{product.nombre}" itemValue="#{product.id}"/>
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Cantidad: " style="font-weight:bold;"/>
+					<p:inputText value="#{MBean.cantidadPedidos}" />
+					
+					<p:outputLabel value="Precio de Compra: " style="font-weight:bold;"/>
+					<p:inputText value="#{MBean.precioCompraPedidos}" />
+					
+				</p:panelGrid>							
+				<p:commandButton value="Agregar" action="#{MBean.agregarProductosPedidos()}" update=":formcompra:detalle, messages" />				
+				<p:separator></p:separator>
+				<p:dataTable id="detalle" var="detalles" value="#{MBean.detallesPedidos}" 
+		        	emptyMessage="No existen Productos para esta Compra"
+		        	style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px">
+			       <f:facet name="header">
+			           Detalle del Pedido
+			       </f:facet>
+			       
+			       <p:column headerText="Producto">
+			       		<h:outputText value="#{detalles.producto.nombre}" />
+			       </p:column>
+			 
+			       <p:column headerText="Cantidad">
+			              <h:outputText value="#{detalles.cantidad}" />
+			       </p:column>
+			       
+			       <p:column headerText="Precio">
+			              <h:outputText value="$#{detalles.precioString}" />
+			       </p:column>
+			       
+			       <p:column style="text-align: center;" id="ok">
+						<f:facet name="header">
+							<h:outputText value="Quitar" title="Quitar Producto" />
+						</f:facet>						
+						<p:commandLink title="Quitar" action="#{MBean.onDeleteDetallePedido(detalles)}" 
+							update="detalle" >							
+							<h:graphicImage value="/images/elim.png" width="20" />
+						</p:commandLink>
+	
+					</p:column>	
+					
+					<p:columnGroup type="footer">
+					            <p:row>
+					                <p:column colspan="3" style="text-align:right" footerText="Total de la compra: " />
+					                <p:column footerText=" $ #{MBean.montoPedidosString}" />					                
+					            </p:row>
+					 </p:columnGroup>	 
+			          
+			   </p:dataTable>
+			   <p:commandButton value="Guardar" action="#{MBean.confirmarCompra()}" update="messages"/>
+			   <p:commandButton value="Cancelar" action="#{MBean.cancelarConfCompra()}" />
+			
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Reportes - Patrimonio</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="repoGan">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>			
+			<p:panelGrid columns="1" style="width:100%; margin_top:20px; text-align:center;" styleClass="panelGrid">
+				<f:facet name="header">
+					<h:outputLabel value="Patrimonio Actual" />
+					<h:commandLink action="#{MBean.generarReportePatrimonio()}">
+						<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+					</h:commandLink>
+				</f:facet>
+			</p:panelGrid>
+			<p:panelGrid style="width:100%; margin_top:20px; text-align:center;" styleClass="panelGrid">
+				<f:facet name="header">
+					<p:row>
+			            <p:column colspan="4">IJM - Comunicaciones</p:column>
+			        </p:row>
+			        <p:row>
+			            <p:column colspan="2">Activos</p:column>
+			            <p:column colspan="2">Pasivos</p:column>
+			        </p:row>
+				</f:facet>
+				<p:row>
+			        <p:column style="font-weight: bold;">Caja:</p:column>
+			        <p:column style="font-weight: bold;"><p:outputLabel id="montoCaja" value="#{MBean.montoTotalCaja}"/></p:column>
+			 
+			        <p:column rowspan="2" style="font-weight: bold;">CuentaCorriente - Proveedores:</p:column>
+			        <p:column rowspan="2" style="font-weight: bold;"><p:outputLabel id="montoProveedor" value="#{MBean.montoTotalProveedores}" /></p:column>
+			    </p:row>
+			    <p:row>
+			        <p:column style="font-weight: bold;">Stock - Productos:</p:column>
+			        <p:column style="font-weight: bold;"><p:outputLabel id="montoProducto" value="#{MBean.montoTotalProductos}"/></p:column>
+			 
+			        
+			    </p:row>
+			    <p:row>
+			        <p:column style="font-weight: bold;">CuentaCorriente - Clientes:</p:column>
+			        <p:column style="font-weight: bold;"><p:outputLabel id="montoCliente" value="#{MBean.montoTotalClientes}"/></p:column>
+			        
+			        <p:column rowspan="2" style="font-weight: bold;">CuentaCorriente - Virtual:</p:column>
+			        <p:column rowspan="2" style="font-weight: bold;"><p:outputLabel id="montoCCVirtual" value="#{MBean.montoTotalCCVirtual}" /></p:column>
+			    </p:row>
+			    <p:row>
+			        <p:column style="font-weight: bold;">Stock - Virtual:</p:column>
+			        <p:column style="font-weight: bold;"><p:outputLabel id="montoSVirtual" value="#{MBean.montoTotalStockVirtual}"/></p:column>
+			    </p:row>
+			    <f:facet name="footer">
+			        <p:row>
+			            <p:column colspan="2" style="text-align: left;">
+			                <p:outputLabel id="montoActivos" value="SubTotal Activos: $#{MBean.totalActivos}" />
+			            </p:column>
+			            <p:column colspan="2" style="text-align: left;">
+			                <p:outputLabel id="montoPasivos" value="SubTotal Pasivos: $#{MBean.totalPasivos}" />
+			            </p:column>
+			        </p:row>
+			        <p:row>
+			        	<p:column colspan="4" style="text-align: right;">
+			        		<p:outputLabel id="montoTotal" value="Total: $#{MBean.totalPatrimonio}"/>
+			        	</p:column>
+			        </p:row>
+			    </f:facet>
+			</p:panelGrid>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

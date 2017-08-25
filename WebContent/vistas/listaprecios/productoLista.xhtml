@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon" href="images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Productos - Lista Precios</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+				<h:form id="formproductoLista">				
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+					
+					<p:panelGrid columns="1" style="width: 100%">
+					
+						<f:facet name="header">
+							<h:outputLabel value="Seleccione un rubro: " />
+						<p:selectOneMenu value="#{MBean.idRubroLP}" id="comboBoxRUB" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Seleccione.." itemValue="0"
+								noSelectionOption="true" />
+							<f:selectItems value="#{MBean.listRubroLP}" />
+							<p:ajax event="change" update="contenedorProductosLista"
+								listener="#{MBean.onChangeRubroLP()}" />
+						</p:selectOneMenu>
+						
+						</f:facet>
+					</p:panelGrid>
+					
+					<p:dataTable id="contenedorProductosLista"
+						widgetVar="productosListaBusqueda" var="PL"
+						value="#{MBean.getProductosLista()}" paginator="true" rows="16"
+						paginatorPosition="bottom" emptyMessage="No hay productos activos">
+						<f:facet name="header">
+							<p:column style="text-align: center;">
+
+								<p:selectBooleanCheckbox value="#{MBean.porcentaje}"
+									id="chPor">
+									<p:ajax event="change" listener="#{MBean.checkPorcentaje()}"
+										update="porcentaje, descuento, chDes" />
+								</p:selectBooleanCheckbox>
+								<h:outputLabel value="Porcentaje sobre precio de compra: " />
+								<p:inputText value="#{MBean.LPP.porcentaje}" id="porcentaje"
+									disabled="#{!MBean.porcentaje}" />
+								<h:outputLabel value="     " />
+							</p:column>
+							<p:column style="text-align: center;">
+
+								<p:selectBooleanCheckbox value="#{MBean.descuento}" id="chDes">
+									<p:ajax event="change" listener="#{MBean.checkDescuento()}"
+										update="porcentaje, descuento, chPor" />
+								</p:selectBooleanCheckbox>
+								<h:outputLabel value="Descuento sobre precio nominal: " />
+								<p:inputText value="#{MBean.LPP.descuento}" id="descuento"
+									disabled="#{!MBean.descuento}" />
+								<h:outputLabel value="     " />
+							</p:column>
+							<p:column style="text-align: center;">
+								<p:commandButton value="Agregar" action="#{MBean.agregarProductoLista()}" update=":formproductoLista:contenedorLPP, :formproductoLista:contenedorProductosLista,
+								chDes, chPor, :formproductoLista, :formproductoLista:messages" id="bAgregar"/>
+							</p:column>
+						</f:facet>
+
+						<p:column style="width:10%;text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Seleccionar"
+									title="Seleccionar productos a añadir" />
+							</f:facet>
+							<p:selectBooleanCheckbox id="chSelect" value="#{MBean.chSelect}" >
+
+								<p:ajax listener="#{MBean.checkProducto(PL)}"  />
+
+							</p:selectBooleanCheckbox>
+						</p:column>
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Nombre" title="Nombre de producto" />
+							</f:facet>
+							<p:column sortBy="#{PL.nombre}" filterBy="#{PL.nombre}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Nombre" title="Nombre" />
+								</f:facet>
+								<h:outputText value="#{PL.nombre}" />
+							</p:column>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Precio Nominal" title="Precio Nominal" />
+							</f:facet>
+							<p:column sortBy="#{PL.precioNominal}" filterBy="#{PL.precioNominal}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Precio Nominal" title="Precio Nominal" />
+								</f:facet>
+								<h:outputText value="$ #{PL.precioNominal}" />
+							</p:column>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Precio Compra" title="Precio Compra" />
+							</f:facet>
+							<p:column sortBy="#{PL.precioCompra}"
+								filterBy="#{PL.precioCompra}" filterMatchMode="contains"
+								filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Precio Compra" title="Precio Compra" />
+								</f:facet>
+								<h:outputText value="$ #{PL.precioCompra}" />
+							</p:column>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Stock" title="Stock del producto" />
+							</f:facet>
+							<p:column sortBy="#{PL.stock}" filterBy="#{PL.stock}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Stock" title="Stock" />
+								</f:facet>
+								<h:outputText value="#{PL.stock}" />
+							</p:column>
+						</p:column>
+
+
+
+						
+					</p:dataTable>
+					
+					<br/>
+					
+					<p:dataTable  id="contenedorLPP"
+						widgetVar="LPProd" var="lpp"
+						value="#{MBean.getListLPP()}" paginator="true" rows="16"
+						paginatorPosition="bottom" emptyMessage="No hay productos en esta lista de precios">
+						
+						<f:facet name="header">
+						<p:outputLabel value="Productos en la lista de precios #{MBRubro.lp.nombre}" />
+						</f:facet>
+						<p:column style="width:10%;text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Quitar de la lista"
+									title="Quitar producto de la lista de precio" />
+							</f:facet>
+							<p:commandButton style="width:20px; height:20px;" icon="ui-icon-close" action="#{MBean.deleteLPP(lpp)}" update=":formproductoLista:contenedorLPP,
+							 :formproductoLista:contenedorProductosLista"></p:commandButton>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Nombre" title="Nombre de producto" />
+							</f:facet>
+							<p:column sortBy="#{lpp.producto.nombre}" filterBy="#{lpp.producto.nombre}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Nombre" title="Nombre" />
+								</f:facet>
+								<h:outputText value="#{lpp.producto.nombre}" />
+							</p:column>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Precio de venta" title="Precio de venta" />
+							</f:facet>
+							<p:column sortBy="#{lpp.stringPreciovta}" filterBy="#{lpp.stringPreciovta}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Precio de venta" title="Precio de venta" />
+								</f:facet>
+								<h:outputText value="$#{lpp.stringPreciovta}" />
+							</p:column>
+						</p:column>
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Ganancia" title="Ganancia" />
+							</f:facet>
+							<p:column sortBy="#{lpp.stringGanancia}" filterBy="#{lpp.stringGanancia}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Ganancia" title="Ganancia" />
+								</f:facet>
+								<h:outputText value="$#{lpp.stringGanancia}" />
+							</p:column>
+						</p:column>
+						
+						
+						<p:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="Porcentaje / Descuento" title="Porcentaje / Descuento" />
+							</f:facet>
+							<p:column sortBy="#{lpp.parametroAplicado}" filterBy="#{lpp.parametroAplicado}"
+								filterMatchMode="contains" filterStyle="display:none;">
+								<f:facet name="header">
+									<h:outputText value="Porcentaje / Descuento" title="Porcentaje / Descuento" />
+								</f:facet>
+								<h:outputText value="#{lpp.parametroAplicado}" />
+							</p:column>
+						</p:column>
+						
+
+					
+					</p:dataTable>
+
+
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+
+</ui:composition>
+</html>

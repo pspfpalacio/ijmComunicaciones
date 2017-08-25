@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Ranking - Carga Virtual</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formCVirtual">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<p:panelGrid columns="1" style="width:100%; margin_top:20px; text-align:center;">
+			<f:facet name="header">
+				Ranking de ventas de Carga Virtual
+			</f:facet>
+			<p:row>
+				<p:outputLabel value="Seleccione una Plataforma: "/>
+				
+				<p:selectOneMenu id="advanced" value="#{MBean.selecetedCVirtual}"  panelStyle="width:300px"
+	                       effect="fade" style="width:300px">
+		            <f:selectItem itemLabel="Plataformas" itemValue="0" noSelectionOption="true"/>             
+		            <f:selectItems value="#{MBean.listaCVirtual}" var="cv" itemLabel="#{cv.nombre}" itemValue="#{cv.id}" />
+					<p:ajax event="change" listener="#{MBean.onchangePlataformaRanking()}" update="boton, popup1, popup2"/>
+		        </p:selectOneMenu>
+			</p:row>
+			
+			<p:row>
+		    	<p:calendar value="#{MBean.fechaICV}" id="popup1"/>
+		    	<p:commandButton id="boton" style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" 
+		    	icon="ui-icon-search" disabled="#{!MBean.enabledBotonRanking}" action="#{MBean.browseRankingCVirtual()}" 
+		    	ajax="false" update="messages, ranking"/>
+		    	<p:calendar value="#{MBean.fechaFCV}" id="popup2"/>
+			</p:row>
+			
+			</p:panelGrid>
+			
+			<p:dataTable var="aux" id="ranking" value="#{MBean.listaRankingV}" emptyMessage="Seleccione un criterio de filtrado" rendered="#{MBean.activadorRankingVirtual}">
+				<f:facet name="header">
+					Ranking de Cargas Virtuales
+					
+					<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.generarReporteRankingVirtual()}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+					
+				</f:facet>
+			
+			    <p:column headerText="Cliente">
+			        <h:outputText value="#{aux.cli}" />
+			    </p:column>
+			 
+			    <p:column headerText="Monto">
+			        <h:outputText value="#{aux.mon}" />
+			    </p:column>
+
+			</p:dataTable>
+			
+			
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+	</html>
+	

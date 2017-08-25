@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<p:dialog header="Usuario" widgetVar="dialogUsuarioVista" id="dialogU" closable="false" closeOnEscape="false">
+			<p:outputPanel id="panelUser">
+   				<p:panelGrid columns="2">	   				
+   					
+   					<h:outputLabel for="username" value="UserName: " />
+   					<p:inputText id="username" value="#{MBean.username}" />
+   					<h:outputLabel for="nombre" value="Apellido y Nombre: " />
+   					<p:inputText id="nombre" value="#{MBean.nombreUsuario}" />
+					<h:outputLabel value="Contraseña: " for="passNew"/>
+					<p:password id="passNew" value="#{MBean.newPass}" >
+						<p:ajax event="keyup" update="ok" listener="#{MBean.handleKeyEvent()}"/>
+					</p:password>
+					<h:outputLabel value="Confirmar Contraseña: " for="confirmPassNew"/>
+					<p:column>
+						<p:password id="confirmPassNew" value="#{MBean.confirmNewPass}">
+				    		<p:ajax event="keyup" update="ok" listener="#{MBean.handleKeyEvent()}"/>
+				    	</p:password>
+				    	<h:outputText id="ok" value="#{MBean.textOK}"  />
+			    	</p:column>
+   					<p:commandButton value="Guardar" action="#{MBean.agregarUsuarioVista()}" 
+   						oncomplete="PF('dialogUsuarioVista').hide()" update="messages"/>
+   					<p:commandButton value="Cancelar" action="#{MBean.cancelarUsuario()}" 
+   						oncomplete="PF('dialogUsuarioVista').hide()" update="panelUser"/>
+   					
+   				</p:panelGrid>
+  				</p:outputPanel>
+		</p:dialog>
+	</ui:composition>
+</html>

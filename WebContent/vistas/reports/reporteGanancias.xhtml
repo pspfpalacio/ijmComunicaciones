@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Reportes Ganancias</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="repoGan">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			
+			
+			
+			
+			<p:panelGrid columns="1" style="width:100%; margin_top:20px; text-align:center;" styleClass="panelGrid">
+				<f:facet name="header">
+					<h:outputLabel value="Ganancias, filtre entre fechas" />
+				</f:facet>
+					<p:row>
+						<p:selectOneMenu id="advanced" value="#{MBean.idProdFiltro}"  panelStyle="width:300px"
+				                         effect="fade" style="width:300px" filter="true" filterMatchMode="contains">
+				            <f:selectItem itemLabel="Todos" itemValue="0"/>             
+				            <f:selectItems value="#{MBean.listaProductosGanancia}" var="prod" itemLabel="#{prod.nombre}" itemValue="#{prod.id}" />
+
+				        </p:selectOneMenu>
+					
+					
+					</p:row>
+				    <p:row>
+				    	<p:calendar value="#{MBean.inicioGanancia}" id="popup1"/>
+				    	<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" 
+				    	icon="ui-icon-search" action="#{MBean.browseGanancias()}" ajax="false" update="messages, AG, AGP"/>
+				    	<p:calendar value="#{MBean.finalGanancia}" id="popup2"/>
+				    </p:row>
+			</p:panelGrid>
+			
+			
+			
+			
+			<p:dataTable var="aux" id="AG" value="#{MBean.listaAuxGanancia}" emptyMessage="Seleccione un criterio de filtrado" rendered="#{MBean.activadorListasGanancia}">
+				<f:facet name="header">
+					Listado de ganancias
+					
+					<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.generarReporteGanancia('simple')}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+					
+				</f:facet>
+		        <p:column style="width:16px">
+		            <p:rowToggler />
+		        </p:column>
+			
+			    <p:column headerText="Número de venta">
+			        <h:outputText value="#{aux.venta.id}" />
+			    </p:column>
+			 
+			    <p:column headerText="Fecha">
+			        <h:outputText value="#{aux.stringFecha}" />
+			    </p:column>
+			    
+   			    <p:column headerText="Cliente">
+			        <h:outputText value="#{aux.venta.cliente.nombre}" />
+			    </p:column>
+			 
+			    <p:column headerText="Costo">
+			        <h:outputText value="#{aux.precioCompraString}" />
+			    </p:column>
+			 
+			    <p:column headerText="Venta">
+			        <h:outputText value="#{aux.precioVentaString}" />
+			    </p:column>
+			    
+   			    <p:column headerText="Ganancia">
+			        <h:outputText value="#{aux.gananciaString}" />
+			    </p:column>
+			    
+			    <p:rowExpansion>
+		            <p:dataTable var="det"  style="width:80%" value="#{aux.venta.detalleVenta}">
+		                <p:column headerText="Producto">
+					        <h:outputText value="#{det.producto.nombre}" />
+					    </p:column>
+					    <p:column headerText="Cantidad">
+					        <h:outputText value="#{det.cantidad}" />
+					    </p:column>
+   					    <p:column headerText="Precio Unitario">
+					        <h:outputText value="$ #{det.stringPrecioUnitario}" />
+					    </p:column>
+					    
+   					    <p:column headerText="Subtotal">
+					        <h:outputText value="$ #{det.stringSubtotal}" />
+					    </p:column>
+		            </p:dataTable>
+		        </p:rowExpansion>
+			    
+			    
+			    <f:facet name="footer">
+			    <h:outputLabel value="Ganancia total del período: " />
+			    <h:outputLabel value="$ #{MBean.gananciaTotalString}" />
+			    </f:facet>
+			</p:dataTable>
+			
+			<p:dataTable var="auxP" id="AGP" value="#{MBean.listaAuxGananciaProd}" emptyMessage="Seleccione un criterio de filtrado" rendered="#{MBean.activadorListasGananciaProd}">
+				<f:facet name="header">
+				
+				<h:outputLabel value="Listado de ganancias de: #{MBean.nombreProductoReporte}" />
+				
+									<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.generarReporteGanancia('prod')}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+				
+				
+				</f:facet>
+				<p:column headerText="Número de venta">
+			        <h:outputText value="#{auxP.idVenta}" />
+			    </p:column>
+			    
+			    <p:column headerText="Fecha">
+			        <h:outputText value="#{auxP.stringFecha}" />
+			    </p:column>
+			    
+   			    <p:column headerText="Cantidad">
+			        <h:outputText value=" #{auxP.cantidad}" />
+			    </p:column>
+			    
+			 
+			    <p:column headerText="Costo">
+			        <h:outputText value=" #{auxP.stringPrecom}" />
+			    </p:column>
+			 
+			    <p:column headerText="Venta">
+			        <h:outputText value=" #{auxP.stringSubtotal}" />
+			    </p:column>
+			    
+   			    <p:column headerText="Ganancia">
+			        <h:outputText value=" #{auxP.stringMonganancia}" />
+			    </p:column>
+			    
+				<f:facet name="footer">
+				
+				<h:outputLabel value="Ganancia total del período: " />
+			    <h:outputLabel value="$ #{MBean.gananciaTotalProdString}" />
+				
+				</f:facet>
+			
+			
+			</p:dataTable>
+			
+			
+			
+			
+			
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+	</html>

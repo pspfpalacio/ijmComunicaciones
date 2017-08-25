@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Cuenta Corriente Proveedor</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formclienteCC">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+						<p:panelGrid columns="1" style="width:100%; text-align:center;">
+			<p:row>
+		    	<p:calendar value="#{MBean.inicioCCP}" id="popup1"/>
+		    	<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" action="#{MBean.onfilteredDateCCProveedor()}" ajax="false" update="contenedorCC"/>
+		    	<p:calendar value="#{MBean.finalCCP}" id="popup2"/>
+		    	</p:row>
+			</p:panelGrid>
+			
+				<p:dataTable id="contenedorCC" widgetVar="ccBusqueda" var="ccProveedor"
+					value="#{MBean.listaCuentasCorrienteProveedor}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" filteredValue="#{MBean.filteredListadoCCProveedor}" pageOnly="true"					
+					emptyMessage="No existen Registros" sortMode="multiple" rowsPerPageTemplate="6, 16, 22">
+					
+					<f:facet name="header">						
+						<p:outputLabel style="text-align: rigth;" value="#{MBean.proveedorCC.apellido}" />
+						<p:outputLabel value=", " />
+						<p:outputLabel value="#{MBean.proveedorCC.nombre}" />
+						<p:outputLabel value=", " />
+						<p:outputLabel value="#{MBean.cantidadCC}                movimientos hasta la fecha" />
+						
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('ccBusqueda').filter()" placeholder="Buscar" style="height:17px; font-size:samller;"/>
+
+						</p:outputPanel> 
+						
+						<p:outputPanel style="float:right;">
+							
+							<h:commandLink action="#{MBean.imprimirReporteProveedor()}">
+								<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;" />
+								
+							</h:commandLink>
+						</p:outputPanel> 
+						
+						
+					</f:facet>					
+					
+					<p:column sortBy="#{ccProveedor.fechaAlta}" filterBy="#{ccProveedor.fechaAlta}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Fecha" 
+								title="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{ccProveedor.fechaString}" />
+					</p:column>
+					
+					<p:column sortBy="#{ccProveedor.tipoMovimiento}" filterBy="#{ccProveedor.tipoMovimiento}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Movimiento" 
+								title="Movimiento" />
+						</f:facet>
+						<h:outputText value="#{ccProveedor.tipo}" />
+					</p:column>					
+					
+					<p:column sortBy="#{ccProveedor.usuario.username}" filterBy="#{ccProveedor.usuario.username}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Usuario"
+								title="Usuario" />
+						</f:facet>
+						<h:outputText value="#{ccProveedor.usuario.username}" />
+					</p:column>
+					
+					<p:column sortBy="#{ccProveedor.monto}" filterBy="#{ccProveedor.monto}" 
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Monto"
+								title="Monto" />
+						</f:facet>
+						<h:outputText value="$#{ccProveedor.montoString}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Ver Detalle" title="Ver"/>
+						</f:facet>
+						<p:commandButton action="#{MBean.onViewDetCC(ccProveedor)}" icon="ui-icon-search" 
+								style="width: 30px; height: 30px;" ajax="false" disabled="#{ccProveedor.estadoItem}"/>
+					</p:column>
+					
+					<f:facet name="footer">
+						<h:outputText value="Importe Total: $ #{MBean.proveedorCC.saldoString}" />
+					</f:facet>
+
+				</p:dataTable>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

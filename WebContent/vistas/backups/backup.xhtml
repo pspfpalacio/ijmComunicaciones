@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />		
+			<title>Backups</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+				<h:form id="formulario" enctype="multipart/form-data">
+					<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:panel styleClass="panelGrid" style="margin-top:20px;width:100%;">
+						<h2>Gestión de Base de Datos - Copias de seguridad y restauración</h2>
+						<p:tabView>
+							<p:tab title="Generar Backup">
+								<p:panelGrid columns="2" style="width:100%;">
+									<h:outputLabel value="Generar y guardar backup de Base de Datos (Copia de seguridad): " />						
+									<p:commandButton value="Descargar" ajax="false" icon="ui-icon-arrowthick-1-s" onclick="return confirm('Esta seguro que desea realizar el backup de la BD?')">
+										<p:fileDownload value="#{MBean.file2}" />
+									</p:commandButton>
+								</p:panelGrid>
+							</p:tab>
+							<p:tab title="Restaurar Backup">
+								<p:panelGrid columns="2" style="width:100%;">
+									<h:outputText value="Seleccione archivo (Copia de seguridad) para restaurar Base de Datos:" />
+									<p:fileUpload fileUploadListener="#{MBean.uploadBackup}" mode="advanced" 
+										dragDropSupport="false" id="upload"
+										 label="Seleccione Archivo" oncomplete="upload"
+										fileLimit="1" allowTypes="/(\.|\/)(sql)$/" auto="true"
+										invalidFileMessage="El tipo de archivo no es válido" />
+									<f:facet name="footer">
+										<p:commandButton value="Guardar Cambios" ajax="false" onclick="return confirm('ESTA SEGURO DE RESTAURAR LA BASE DE DATOS?')"
+										 action="#{MBean.restaurarBackup()}" update="messages"/>
+									</f:facet>
+									
+								</p:panelGrid>
+							</p:tab>
+						</p:tabView>
+					</p:panel>
+				</h:form>
+				
+			</div>
+		</h:body>
+	</f:view>
+	</ui:composition>
+</html>

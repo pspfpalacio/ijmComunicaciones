@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<p:dialog header="Compra de Carga Virtual" widgetVar="dialogCompraCargaVirtual"
+		id="dialogCCV" closable="false" closeOnEscape="false">
+		<p:outputPanel id="dialogocompracarga">
+			<p:panelGrid columns="2">
+
+
+				<h:outputLabel value="Fecha: " />
+				<p:calendar id="fecha" value="#{MBean.compraCargaVirtual.fechaAlta}" pattern="dd/MM/yyyy"></p:calendar>
+				<h:outputLabel value="Plataforma(Carga Virtual):  " />
+				<p:selectOneMenu id="plat" value="#{MBean.idCVCompra}" style="width:150px;">
+					<f:selectItem itemLabel="Seleccione" itemValue="0"/>
+					<f:selectItems value="#{MBean.getCargasXEstado(1)}" var="carga" 
+						itemLabel="#{carga.nombre}" itemValue="#{carga.id}"/>
+				</p:selectOneMenu>
+				<h:outputLabel value="Cantidad/Monto:  " />
+				<h:inputText value="#{MBean.compraCargaVirtual.cantidadMonto}"></h:inputText>
+				
+				<p:commandButton value="Guardar" action="#{MBean.guardarCompraCarga()}"
+					oncomplete="PF('dialogCompraCargaVirtual').hide()"
+					update="messages, formcargas" />
+				<p:commandButton value="Cancelar"
+					action="#{MBean.cancelarCompraCarga()}"
+					oncomplete="PF('dialogCompraCargaVirtual').hide()" update="formcargas" />
+
+			</p:panelGrid>
+		</p:outputPanel>
+	</p:dialog>
+	
+	</ui:composition>
+</html>

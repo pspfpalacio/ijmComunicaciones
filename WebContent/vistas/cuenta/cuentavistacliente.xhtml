@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Cuenta Corriente</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formclienteCC">
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<h1><h:outputText value="#{beanCuenta.cliente.apellido} - #{beanCuenta.cliente.nombre}" /></h1>
+			<p:panelGrid columns="5" style="width:100%; text-align:center;">
+				<p:outputLabel value="Fecha Desde: " />
+			    <p:calendar value="#{beanCuenta.fechaInicio}" />
+			    
+			    <p:outputLabel value="Hasta: " />
+			    <p:calendar value="#{beanCuenta.fechaFin}" />
+			    
+			    <p:commandButton icon="ui-icon-search" action="#{beanCuenta.getCuentaCorriente()}" update="cuentaTable"/>
+			</p:panelGrid>
+			<p:dataTable id="cuentaTable" widgetVar="cuentaBusqueda" var="cuenta"
+			value="#{beanCuenta.listaCuentas}" resizableColumns="true" liveScroll="true" scrollRows="50"
+			scrollable="true" scrollHeight="500" scrollWidth="100%" filteredValue="#{beanCuenta.filteredCuentas}" 
+			 emptyMessage="No existen Registros" sortMode="multiple" >					
+					<f:facet name="header">					
+						<p:outputLabel value="Movimientos: #{fn:length(beanCuenta.filteredCuentas)} en total" />						
+						<p:outputPanel style="float:right;">
+							<p:inputText id="globalFilter" onkeyup="PF('cuentaBusqueda').filter()" 
+							placeholder="Buscar" style="height:17px; font-size:samller;"/>
+						</p:outputPanel>						
+						<p:outputPanel style="float:right;">							
+							<h:commandLink action="#{beanCuenta.generarReporteClientes()}" target="_blank">
+								<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;" />
+							</h:commandLink>
+						</p:outputPanel> 
+					</f:facet>					
+					
+					<p:column sortBy="#{cuenta.fecha}" filterBy="#{cuenta.fecha}"
+						filterMatchMode="contains" filterStyle="display:none;" style="width:80px;">
+						<f:facet name="header">
+							<h:outputText value="Fecha" title="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{cuenta.fecha}" >
+							<f:convertDateTime timeZone="America/Argentina/Buenos_Aires" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="#{cuenta.detalle}" filterBy="#{cuenta.detalle}"
+						filterMatchMode="contains" filterStyle="display:none;">
+						<f:facet name="header">
+							<h:outputText value="Detalle" title="Detalle" />
+						</f:facet>
+						<h:outputText value="#{cuenta.detalle}" />
+					</p:column>					
+					
+					<p:column sortBy="#{cuenta.debe}" filterBy="#{cuenta.debe}"
+						filterMatchMode="contains" filterStyle="display:none;" style="width:100px;">
+						<f:facet name="header">
+							<h:outputText value="Debe" title="Deve" />
+						</f:facet>
+						<h:outputText value="$" />
+						<h:outputText value="#{cuenta.debe}" >
+							<f:convertNumber maxFractionDigits="2"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="#{cuenta.haber}" filterBy="#{cuenta.haber}" 
+						filterMatchMode="contains" filterStyle="display:none;" style="width:100px;">
+						<f:facet name="header">
+							<h:outputText value="Haber" title="Haber" />
+						</f:facet>
+						<h:outputText value="$" />
+						<h:outputText value="#{cuenta.haber}" >
+							<f:convertNumber maxFractionDigits="2"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="#{cuenta.saldo}" filterBy="#{cuenta.saldo}"
+						filterMatchMode="contains" filterStyle="display:none;" style="width:100px;">
+						<f:facet name="header">
+							<h:outputText value="Saldo" title="Saldo" />
+						</f:facet>
+						<h:outputText value="$" />
+						<h:outputText value="#{cuenta.saldo * (-1)}" >
+							<f:convertNumber maxFractionDigits="2"/>
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+				<p:panelGrid columns="5" style="width:100%;">
+					<f:facet name="header">
+						<p:commandButton value="volver" action="#{beanCuenta.volver()}"/>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

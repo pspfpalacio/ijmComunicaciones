@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Pedidos</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formcompra">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			
+			<p:panelGrid id="grid" columns="2" style="width: 100%;">
+						<f:facet name="header">
+									Pedidos
+								</f:facet>
+			
+				<h:outputLabel for="proveedor" value="Proveedor: " />
+				<p:selectOneMenu id="proveedor" value="#{MBean.idProveedorCompra}" panelStyle="width:180px"
+                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains" required="true" label="Proveedor">
+                    <p:ajax event="change" listener="#{MBean.onProveedorCompraCheck}" update="nombreNegocio, direccion" />
+                    <f:selectItem itemLabel="Seleccione.." itemValue="0"/>
+		            <f:selectItems value="#{MBean.listaProveedoresCompra}" var="proveedor" 
+		            	itemLabel="#{proveedor.apellido}" itemValue="#{proveedor.id}" />
+		        </p:selectOneMenu>
+		        
+		        <p:column>
+			        <h:outputLabel for="nombreNegocio" value="Nombre de Negocio: " />
+			        <p:inputText id="nombreNegocio" value="#{MBean.nombreProveedorCompra}" disabled="true"/>
+		        </p:column>
+		        <p:column>
+		        	<h:outputLabel for="direccion" value="Dirección: " />
+		        	<p:inputText id="direccion" value="#{MBean.direccionProveedorCompra}" disabled="true"/>
+		        </p:column>
+		        
+		        <h:outputLabel for="rubro" value="Rubros: " />
+		        <p:selectOneMenu id="rubro" value="#{MBean.idRubroCompra}" panelStyle="width:180px"
+                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains">
+                    <p:ajax event="change" listener="#{MBean.onRubroCompraCheck}" update="productos" />
+                    <f:selectItem itemLabel="Seleccione.." itemValue="0"/>
+		            <f:selectItems value="#{MBean.listaRubrosCompra}" var="rubros" 
+		            	itemLabel="#{rubros.nombre}" itemValue="#{rubros.id}" />
+		        </p:selectOneMenu>
+		     </p:panelGrid>
+		        
+		     <p:panelGrid id="panelGrid" columns="1" style="width:100%;" >
+		        <p:dataTable id="productos" var="producto" value="#{MBean.listaProductosCompra}" 
+		        	editable="true" editMode="cell" widgetVar="cellProductos" 
+		        	emptyMessage="No existen productos para ese Rubro"
+		        	style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px">
+			       <f:facet name="header">
+			           Productos
+			       </f:facet>
+			       
+			       <p:ajax event="cellEdit" listener="#{MBean.onCellEditPedido(producto)}" update="cantidad, cant, precio, pre" />
+			       
+			       <p:column headerText="Nombre">
+			       		<h:outputText value="#{producto.nombre}" />
+			       </p:column>
+			 
+			       <p:column headerText="Cantidad">
+			              <p:cellEditor>
+			                  <f:facet name="output"><h:outputText id="cant" value="#{producto.cantidad}" /></f:facet>
+			                  <f:facet name="input"><p:inputText id="cantidad" value="#{producto.cantidad}"/></f:facet>
+			              </p:cellEditor>
+			       </p:column>
+			       
+			       <p:column headerText="Precio">
+			              <p:cellEditor>
+			                  <f:facet name="output"><h:outputText id="pre" value="#{producto.precio}" /></f:facet>
+			                  <f:facet name="input"><p:inputText id="precio" value="#{producto.precio}"/></f:facet>
+			              </p:cellEditor>
+			       </p:column>
+			       
+			       <p:column style="text-align: center;" id="ok">
+						<f:facet name="header">
+							<h:outputText value="Select" title="Seleccionar el producto" />
+						</f:facet>						
+						<p:commandLink title="Seleccionar" action="#{MBean.onCheckProduct(producto)}" 
+							update=":formcompra">							
+							<h:graphicImage value="/images/ok.png" width="20" id="check" />
+						</p:commandLink>
+					</p:column>		 
+			          
+			   </p:dataTable>
+			   
+			  
+		        <p:dataTable id="productosCheck" var="producto" style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 5px"
+		        	value="#{MBean.listaProductosCompraCheck}" rendered="#{MBean.checkProductosCompra}">
+			       <f:facet name="header">
+			           Productos
+			       </f:facet>
+			       
+			       <p:column headerText="Nombre">
+			       		<h:outputText value="#{producto.nombre}" />
+			       </p:column>
+			 
+			       <p:column headerText="Cantidad">
+			              <h:outputText value="#{producto.cantidad}" />
+			       </p:column>
+			       
+			       <p:column headerText="Precio de Compra">
+			              <h:outputText value="#{producto.precioString}" />
+			       </p:column>
+			       
+			       <p:column headerText="Subtotal">
+			       		<h:outputText value="$#{producto.subtotal}" />
+			       </p:column>
+			       
+			       <p:column style="text-align: center;" id="ok">
+						<f:facet name="header">
+							<h:outputText value="Delete" title="Eliminar el Producto" />
+						</f:facet>						
+						<p:commandLink title="Seleccionar" action="#{MBean.onProductDelete(producto)}" 
+							update=":formcompra">							
+							<h:graphicImage value="/images/elim.png" width="20" id="delete" />
+						</p:commandLink>
+
+					</p:column>	
+					
+					<p:columnGroup type="footer">
+					            <p:row>
+					                <p:column colspan="3" style="text-align:right" footerText="Total de la compra: " />
+					                <p:column footerText=" $ #{MBean.montoCompraString}" />
+					 
+					                
+					            </p:row>
+					 </p:columnGroup>	 
+			          
+			   </p:dataTable>
+			   
+			   <p:column>
+			   	<p:row>
+			   		<p:commandButton value="Guardar" action="#{MBean.guardarCompra()}" update=":formcompra" />
+			   	</p:row>
+			   	<p:row>
+			   		<p:commandButton value="Cancelar" action="#{MBean.cancelarCompra()}" update=":formcompra" />
+			   	</p:row>
+			   </p:column>
+			</p:panelGrid>
+			
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>

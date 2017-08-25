@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Pagos</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+				<h:form id="formpago">
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" sticky="true" showDetail="false"
+						autoUpdate="true" life="2000" />
+					<p:panelGrid columns="1" style="width:100%; margin_top:20px;">
+						<f:facet name="header">
+							<p:selectOneMenu value="#{MBean.formaPago}"
+								id="comboBoxFormaPago" style="width:300px;">
+								<f:selectItem itemLabel="Seleccione forma de pago" itemValue="0"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Contado" itemValue="1" />
+								<f:selectItem itemLabel="Depósitos" itemValue="3" />
+								<p:ajax event="change" update="formpago"
+									listener="#{MBean.listenerPago()}"></p:ajax>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:panelGrid>
+					<p:panelGrid columns="2" style="width:100%; margin_top:20px;"
+						rendered="#{MBean.boolContado}">
+						<f:facet name="header">
+							Pago contado 
+						</f:facet>
+						<p:outputLabel value="Fecha: " />
+						<p:calendar value="#{MBean.fechaPago}" pattern="dd/MM/yyyy"  />						
+						<p:outputLabel value="Monto: " />
+						<p:inputText id="montocontado" value="#{MBean.montoContado}" />						
+						<p:outputLabel value="Seleccione un cliente o proveedor" />
+						<p:selectOneMenu value="#{MBean.idClientePago}" id="comboBoxCli"
+							filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Cli o Prov" itemValue="0" />
+							<f:selectItems value="#{MBean.listaClientes}" />
+						</p:selectOneMenu>						
+						<p:outputLabel value="Descripción: " />
+						<p:inputTextarea value="#{MBean.descContado}" cols="40" rows="2" autoResize="true"></p:inputTextarea>
+						<f:facet name="footer">
+							<p:commandButton style="float:right;" value="Aceptar"
+							action="#{MBean.aceptarPagoContado()}"
+							update="messages, formpago" />
+						</f:facet>
+					</p:panelGrid>
+					<p:panelGrid columns="2" style="width:100%; margin_top:20px;"
+						rendered="#{MBean.boolTerceros}">
+						<f:facet name="header">
+							Depósitos
+						</f:facet>
+						<p:outputLabel value="Fecha: " />
+						<p:calendar value="#{MBean.fechaPago}" pattern="dd/MM/yyyy" />						
+						<p:outputLabel value="Monto: " />
+						<p:inputText id="montoter" value="#{MBean.montoTerceros}" />
+						<p:outputLabel value="Emisor del pago" />
+						<p:selectOneMenu value="#{MBean.idClientePagoTE}"
+							id="comboBoxCliTE" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Cli o Prov" itemValue="0" />
+							<f:selectItems value="#{MBean.listaClientes}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Receptor del pago" />
+						<p:selectOneMenu value="#{MBean.idClientePagoRE}"
+							id="comboBoxCliRE" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Cli o Prov" itemValue="0" />
+							<f:selectItems value="#{MBean.listaClientes}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Descripción: " />
+						<p:inputTextarea value="#{MBean.descTerceros}" cols="40" rows="2" autoResize="true"></p:inputTextarea>
+						<f:facet name="footer">
+							<p:commandButton style="float:right;" value="Aceptar"
+								action="#{MBean.aceptarPagoDeposito()}"
+								update="messages, formpago" />								
+						</f:facet>
+					</p:panelGrid>
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+</ui:composition>
+</html>

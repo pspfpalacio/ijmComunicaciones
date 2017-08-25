@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title>Caja - IJM</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formcaja">
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" sticky="true" showDetail="false"
+						autoUpdate="true" life="2000" />
+					<h:panelGrid columns="2" style="width:100%; margin_top:20px;">
+						<p:outputLabel value="Tipo: " />
+						<p:selectOneMenu value="#{MBean.tipoCaja}" id="tipoCaja">
+								<p:ajax event="change"
+									listener="#{MBean.getCajasXTipo(MBean.tipoCaja)}"
+									update="contenedorCaja" />
+								<f:selectItem itemLabel="Todos" itemValue="0"/>
+   								<f:selectItem itemLabel="Salida" itemValue="1" />
+   								<f:selectItem itemLabel="Entrada" itemValue="2" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:panelGrid columns="1" style="width:100%; margin_top:20px; text-align:center;">
+						<p:row>
+							<p:calendar id="fechaI" value="#{MBean.fechaInicioCaja}" pattern="dd/MM/yyyy" />						
+							<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" action="#{MBean.buscarCajas()}" update="contenedorCaja" />
+							<p:calendar id="fechaH" value="#{MBean.fechaFinCaja}" pattern="dd/MM/yyyy" />
+						</p:row>
+					</p:panelGrid>					
+					<p:dataTable id="contenedorCaja" widgetVar="cajaBusqueda" var="caja"
+						value="#{MBean.listadoCaja}" paginator="true" rows="16" resizableColumns="true"
+						paginatorPosition="bottom" filteredValue="#{MBean.filteredCaja}"
+						emptyMessage="No existen movimientos" sortMode="multiple">
+						<f:facet name="header">
+							<p:outputLabel value="Caja - Monto: $#{MBean.montoActualCaja}" /> 
+							<p:commandButton value="Movimientos" oncomplete="PF('dialogExtraccion').show();"/>
+							<p:spacer width="20" />
+							<p:outputPanel style="float:right;">
+								<p:inputText id="globalFilter" onkeyup="PF('cajaBusqueda').filter()" placeholder="Buscar"/>
+							</p:outputPanel> 
+						</f:facet>
+	
+						<p:column style="width:100px;" sortBy="#{caja.fechaString}" filterBy="#{caja.fechaString}"
+							filterMatchMode="contains" filterStyle="display:none;" headerText="Fecha">							
+							<h:outputText value="#{caja.fechaString}" />
+						</p:column>
+						
+						<p:column sortBy="#{caja.concepto}" filterBy="#{caja.concepto}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Concepto" 
+									title="Concepto"/>
+							</f:facet>
+							<h:outputText value="#{caja.concepto}" />
+						</p:column>
+						
+						<p:column style="width:120px;" sortBy="#{caja.monto}" filterBy="#{caja.monto}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Monto"
+									title="Monto" />
+							</f:facet>
+							<h:outputText value="$#{caja.montoString}" />
+						</p:column>
+						
+						<p:column filterBy="#{caja.tipo}" style="width:100px;"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Tipo"
+									title="Tipo" />
+							</f:facet>
+							<h:outputText value="#{caja.tipo}" />
+						</p:column>
+						
+						<p:column style="width:120px;">
+							<f:facet name="header">
+								<h:outputText value="Saldo" title="Saldo" />
+							</f:facet>
+							<h:outputText value="$" />
+							<h:outputText value="#{caja.total}" >
+								<f:convertNumber maxFractionDigits="2"/>
+							</h:outputText>
+						</p:column>
+						
+						<p:column filterBy="#{caja.usuarioBean.username}" style="width:100px;"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Usuario"
+									title="Usuario" />
+							</f:facet>
+							<h:outputText value="#{caja.usuarioBean.username}" />
+						</p:column>
+	
+					</p:dataTable>
+					<br />
+					<ui:include src="/vistas/cuentacorriente/dialogExtraccion.xhtml"></ui:include>
+				</h:form>
+			</div>
+		</h:body>
+	</f:view>
+	</ui:composition>
+</html>

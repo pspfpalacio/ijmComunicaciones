@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<f:view>
+		<h:head>
+			<link rel="shortcut icon" type="image/x-icon"
+				href="../../images/icono.ico" />
+			<link rel="stylesheet" href="../../includes/estilo.css"
+				type="text/css" />
+			<title> Baja de ventas</title>
+		</h:head>
+		<h:body>
+			<div class="wrapper">
+				<ui:include src="/includes/header.xhtml"></ui:include>
+
+				<h:form id="formbajaVenta">
+					<ui:include src="/includes/menu.xhtml"></ui:include>
+					<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+					<p:panelGrid id="grid" columns="4" style="width: 100%;">
+						<f:facet name="header">
+									Ventas realizadas
+						</f:facet>
+			
+						<h:outputLabel for="cliente" value="Cliente: " />
+						<p:selectOneMenu id="cliente" value="#{MBean.idClienteBajaVentas}" panelStyle="width:180px"
+		                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains" >
+		                    <p:ajax event="change" listener="#{MBean.onClienteVentasCheck}" update="ventas" />
+		                    <f:selectItem itemLabel="Todos" itemValue="0"/>
+				            <f:selectItems value="#{MBean.listaClientesVentas}" var="cliente" 
+				            	itemLabel="#{cliente.nombre}" itemValue="#{cliente.id}" />
+				        </p:selectOneMenu>
+				        <h:outputLabel for="estado" value="Estado: " />
+						<p:selectOneMenu id="estado" value="#{MBean.estadoVentas}" panelStyle="width:180px"
+		                         effect="fade" style="width:160px" filter="true" filterMatchMode="contains" >
+		                    <p:ajax event="change" listener="#{MBean.onClienteVentasCheck}" update="ventas" />
+		                    <f:selectItem itemLabel="Todos" itemValue="2"/>
+		                    <f:selectItem itemLabel="Activas" itemValue="1"/>
+		                    <f:selectItem itemLabel="Bajas" itemValue="0"/>
+				        </p:selectOneMenu>
+				    </p:panelGrid>
+				    <p:panelGrid columns="1" style="width: 100%; text-align:center;">
+				    <p:row>
+				    	<p:calendar value="#{MBean.inicioVenta}" id="popup1"/>
+				    	<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" action="#{MBean.onClienteVentasCheck()}" ajax="false" update="ventas"/>
+				    	<p:calendar value="#{MBean.finalVenta}" id="popup2"/>
+				    </p:row>	
+				    </p:panelGrid>
+					<p:dataTable id="ventas"
+						style="margin-left: 0px; margin-right: 0px; width: 100%; margin-top: 35px"
+						widgetVar="ventasBusqueda" var="venta" value="#{MBean.listaVentasBaja}"
+						paginator="true" rows="16" resizableColumns="true" paginatorPosition="bottom"
+						sortMode="multiple" filteredValue="#{MBean.filteredVentasBaja}"
+						emptyMessage="No existen ventas">
+						<f:facet name="header" >
+					        <p:spacer width="20" />
+							<p:outputPanel style="float:right;">
+								<p:inputText id="globalFilter" onkeyup="PF('ventasBusqueda').filter()" 
+									placeholder="Buscar" style="height:17px; font-size:samller;"/>
+							</p:outputPanel>
+							
+					<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.reporteCompraVenta('Ventas')}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+							
+				        </f:facet>
+				        
+						<p:column style="text-align:center; width: 100px;">
+							<f:facet name="header">
+								<h:outputText value="Baja" 
+									title="Baja"/>
+							</f:facet>
+							<h:commandLink style="width:20px; height:20px;" disabled="#{!venta.enabled}"
+								onclick="return confirm('Desea dar de baja esta venta?')" action="#{MBean.bajarVenta(venta)}">
+								<h:graphicImage value="/images/cancel.ico" width="20" height="20"/>
+							</h:commandLink>
+							<p:rowToggler />
+						</p:column>
+						
+						<p:column sortBy="#{venta.id}" filterBy="#{venta.id}"
+						filterMatchMode="contains" filterStyle="display:none;" style="text-align:center;width:100px;">
+							<f:facet name="header">
+								<h:outputText value="Nro" title="Nro"/>
+							</f:facet>
+							<h:outputText value="#{venta.id}" />
+						</p:column>
+				        
+					    <p:column sortBy="#{venta.stringFecha}" filterBy="#{venta.stringFecha}"
+							filterMatchMode="contains" filterStyle="display:none;" style="width:100px;">
+							<f:facet name="header">
+								<h:outputText value="Fecha" 
+									title="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{venta.stringFecha}" />
+						</p:column>
+						
+						<p:column sortBy="#{venta.cliente.apellido}" filterBy="#{venta.cliente.apellido}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Cliente(Nom y Ape)" 
+									title="Cliente"/>
+							</f:facet>
+							<h:outputText value="#{venta.cliente.apellido}" />
+						</p:column>
+				        
+      					<p:column sortBy="#{venta.cliente.nombre}" filterBy="#{venta.cliente.nombre}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Cliente(Negocio)" 
+									title="Cliente(Negocio)"/>
+							</f:facet>
+							<h:outputText value="#{venta.cliente.nombre}" />
+						</p:column>
+						
+						<p:column sortBy="#{venta.stringMonto}" filterBy="#{venta.stringMonto}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Monto" 
+									title="Monto"/>
+							</f:facet>
+							<h:outputText value="$ #{venta.stringMonto}" />
+						</p:column>
+						
+	      				<p:column sortBy="#{venta.usuario.username}" filterBy="#{venta.usuario.username}"
+							filterMatchMode="contains" filterStyle="display:none;">
+							<f:facet name="header">
+								<h:outputText value="Usuario Responsable" 
+									title="Usuario Responsable"/>
+							</f:facet>
+							<h:outputText value="#{venta.usuario.username}" />
+						</p:column>
+						
+						<p:rowExpansion>
+							<p:panelGrid  columns="1" columnClasses="label,value" style="width:100%">
+				                <f:facet name="header">
+				                    Detalle
+				                </f:facet>
+	
+										<p:dataList value="#{venta.detalleVenta}" var="detalles" >
+											<p:column>
+												<h:outputText value="   Producto: #{detalles.producto.nombre}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="   -   Cantidad: #{detalles.cantidad}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="   -   Precio Unitario: $#{detalles.stringPrecioUnitario}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="   -   Subtotal: $#{detalles.stringSubtotal}" />
+											</p:column>
+										</p:dataList>							
+							</p:panelGrid>
+						</p:rowExpansion>
+					
+					</p:dataTable>
+				</h:form>
+			</div>	
+	</h:body>
+	</f:view>	
+	
+	
+	
+	</ui:composition>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	<f:view>
+	<h:head>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="../../images/icono.ico" />
+		<link rel="stylesheet" href="../../includes/estilo.css" type="text/css" />
+		<title>Ranking - Compra - Producto</title>
+	</h:head>
+	<h:body>
+		<div class="wrapper">
+			<ui:include src="/includes/header.xhtml"></ui:include>
+			
+			<h:form id="formCC">
+			<ui:include src="/includes/menu.xhtml"></ui:include>
+			<p:growl id="messages" sticky="true" showDetail="false" autoUpdate="true" life="2000"/>
+			<p:panelGrid columns="1" style="width:100%; margin_top:20px;">
+				<f:facet name="header">
+					<p:outputLabel value="Ranking - Compras - Producto" />
+				</f:facet>
+				<p:outputLabel value="IJM Comunicaciones" />
+			</p:panelGrid>
+			<p:panelGrid columns="1" style="width:100%; margin_top:20px; text-align:center;">
+				<p:row>					
+					<p:calendar id="fechaI" value="#{MBean.fechaInicioRankingProducto}" pattern="dd/MM/yyyy" />
+					<p:commandButton style="margin-left: 10px; margin-right: 10px; width: 35px; height: 35px;" icon="ui-icon-search" 
+						action="#{MBean.buscarRankingCompraProductoCant()}" update="contenedorRanking" />
+					<p:calendar id="fechaH" value="#{MBean.fechaFinalRankingProducto}" pattern="dd/MM/yyyy" />
+				</p:row>
+			</p:panelGrid>
+			<p:dataTable id="contenedorRanking" widgetVar="rankingBusqueda" var="ranking" filteredValue="#{MBean.filteredRankingCompraProducto}"
+					value="#{MBean.listaRankingProducto}" paginator="true" rows="16" resizableColumns="true"
+					paginatorPosition="bottom" pageOnly="true" sortOrder="descending" sortMode="multiple"	
+					emptyMessage="No existen Registros" rowsPerPageTemplate="10, 20, 30">
+				<f:facet name="header">					
+					<p:outputLabel style="text-align: rigth;" value="IJM Comunicaciones" />
+					
+					<p:outputPanel style="float:right;">
+						
+						<h:commandLink action="#{MBean.generarReporteRanking('compraProductoCantidad')}">
+							<p:graphicImage value="../../images/pdf-icon.png" width="20" style="margin-right: 20px; float: left;"/>
+						</h:commandLink>
+					</p:outputPanel> 
+				</f:facet>
+				
+				<p:column headerText="Cantidad" >
+					<h:outputText value="#{ranking.cantidadString}" />
+					<p:rowToggler />
+				</p:column>
+				
+				<p:column headerText="Producto">
+					<h:outputText value="#{ranking.producto.nombre}" />
+				</p:column>
+				
+				<p:rowExpansion>
+						<p:panelGrid  columns="1" columnClasses="label,value" style="width:100%">
+			                <f:facet name="header">
+			                    Compras
+			                </f:facet>
+
+									<p:dataTable value="#{ranking.listaCompra}" var="detalles" >
+										<p:column headerText="Nro">
+											<h:outputText value="#{detalles.id}" />
+										</p:column>
+										<p:column headerText="Fecha">
+											<h:outputText value="#{detalles.fechaString}" />
+										</p:column>
+										<p:column headerText="Proveedor(Apellido y Nombre)">
+											<h:outputText value="#{detalles.cliente.apellido}" />
+										</p:column>
+										<p:column headerText="Monto">
+											<h:outputText value="$#{detalles.montoString}" />
+										</p:column>
+									</p:dataTable>							
+						</p:panelGrid>
+					</p:rowExpansion>		
+			</p:dataTable>
+			</h:form>
+		</div>
+	</h:body>
+	</f:view>
+	</ui:composition>
+</html>
