@@ -251,6 +251,20 @@ public class DAOCompra implements Serializable {
 		return stock;
 	}
 	
+	public Stock getStockPorProd(float precio, Producto producto){
+		inicializar();
+		Query locQuery = em.createQuery("SELECT s FROM Stock s WHERE s.producto = :pProducto", Stock.class);		
+		locQuery.setParameter("pProducto", producto);
+		Stock stock = new Stock();
+		List<Stock> lista = locQuery.getResultList();
+		for (Stock stock2 : lista) {
+			if (precio == stock2.getPrecioUnitario()) {
+				stock = stock2;
+			}			
+		}
+		return stock;
+	}
+	
 	public int insertUpdateStock(Stock stock){
 		if(stock.getId() != 0){
 			inicializar();
