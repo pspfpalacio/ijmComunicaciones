@@ -4773,85 +4773,97 @@ public class Managed implements Serializable {
 	public void onBajaCompra(Compra comp) {
 		System.out.println("Metodo onBajaCompra()");
 		FacesMessage msg = null;
-		setCurrentDate(new Date());
-		DAOcompra = new DAOCompra();
-		DAOProducto = new DAOProducto();
-		DAOVTA = new DAOventa();
-		DAOCliente = new DAOcliente();
-		DAOcc = new DAOcuentascorriente();
-		cuentaDAO = new DAOCuentas();
-		comp.setEstado("Cancelado");
-		comp.setEnabled(false);
-		comp.setFechaBaja(getCurrentDate());
-		comp.setUsuario2(usuario);
-		boolean alcanza = true;
-		String nombProd = "";
-		String precComp = "";
-		Cliente prov = comp.getCliente();
-		float importe = comp.getMonto();
-		float saldoCC = prov.getSaldo();
-		saldoCC = saldoCC - importe;
-		prov.setSaldo(saldoCC);
-		Cuenta cuenta = new Cuenta();
-		cuenta.setCliente(prov);
-		cuenta.setDetalle("Nota de Dédito - Nro de compra: " + comp.getId());
-		cuenta.setFecha(new Date());
-		cuenta.setHaber(comp.getMonto());
-		cuenta.setMonto(comp.getMonto());
-		cuenta.setSaldo(saldoCC);
-		cuenta.setUsuario(usuario);
-		int updateCC = cuentaDAO.insertar(cuenta);
-		
-		List<DetalleCompra> listaDetalle = comp.getDetalleDeCompra();
-		for (DetalleCompra detalleCompra : listaDetalle) {
-			int st = detalleCompra.getCantidad();
-			float pc = detalleCompra.getPrecioUnitario();
-			Stock stk = new Stock();
-			stk = DAOcompra.getStockPorPrecProd(pc, detalleCompra.getProducto());
-			if(st > stk.getCantidad()){
-				alcanza = false;
-				nombProd = detalleCompra.getProducto().getNombre();
-				precComp = Float.toString(pc);
-			}
-		}
-		if(alcanza){
-			int updateProv = DAOCliente.updateCliente(prov);			
-			int valor = 0;
-			boolean valorS = false;
+		try {
+			setCurrentDate(new Date());
+			DAOcompra = new DAOCompra();
+			DAOProducto = new DAOProducto();
+			DAOVTA = new DAOventa();
+			DAOCliente = new DAOcliente();
+			DAOcc = new DAOcuentascorriente();
+			cuentaDAO = new DAOCuentas();
+			comp.setEstado("Cancelado");
+			comp.setEnabled(false);
+			comp.setFechaBaja(getCurrentDate());
+			comp.setUsuario2(usuario);
+			boolean alcanza = true;
+			String nombProd = "";
+			String precComp = "";
+			Cliente prov = comp.getCliente();
+			float importe = comp.getMonto();
+			float saldoCC = prov.getSaldo();
+			saldoCC = saldoCC - importe;
+			prov.setSaldo(saldoCC);
+			Cuenta cuenta = new Cuenta();
+			cuenta.setCliente(prov);
+			cuenta.setDetalle("Nota de Dédito - Nro de compra: " + comp.getId());
+			cuenta.setFecha(new Date());
+			cuenta.setHaber(comp.getMonto());
+			cuenta.setMonto(comp.getMonto());
+			cuenta.setSaldo(saldoCC);
+			cuenta.setUsuario(usuario);			
+			
+			List<DetalleCompra> listaDetalle = comp.getDetalleDeCompra();
 			for (DetalleCompra detalleCompra : listaDetalle) {
-				Producto prod = new Producto();
-				prod = detalleCompra.getProducto();
-				int cant = detalleCompra.getCantidad();
-				int stk = prod.getStock();
-				stk = stk - cant;
+				int st = detalleCompra.getCantidad();
 				float pc = detalleCompra.getPrecioUnitario();
-				Stock st = new Stock();
-				st = DAOcompra.getStockPorPrecProd(pc, prod);
-				cant = st.getCantidad() - cant;
-				st.setCantidad(cant);
-				prod.setStock(stk);
-				valor = DAOProducto.updateProducto(prod);
-				valorS = DAOVTA.updateStock(st);
+				Stock stk = new Stock();
+				stk = DAOcompra.getStockPorProd(pc, detalleCompra.getProducto());
+				if(st > stk.getCantidad()){
+					alcanza = false;
+					nombProd = detalleCompra.getProducto().getNombre();
+					precComp = Float.toString(pc);
+				}
 			}
-			int valor1 = DAOcompra.updateCompra(comp);
-			if(valor1 != 0 && valor != 0 && valorS && updateProv != 0 && updateCC != 0){
-				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito! La compra se cancelo",
-						null);
+			if(alcanza){
+				int updateCC = cuentaDAO.insertar(cuenta);
+				int updateProv = DAOCliente.updateCliente(prov);			
+				int valor = 0;
+				boolean valorS = false;
+				for (DetalleCompra detalleCompra : listaDetalle) {
+					Producto prod = new Producto();
+					prod = detalleCompra.getProducto();
+					int cant = detalleCompra.getCantidad();
+					int stk = prod.getStock();
+					stk = stk - cant;
+					float pc = detalleCompra.getPrecioUnitario();
+					Stock st = new Stock();
+					st = DAOcompra.getStockPorProd(pc, prod);
+					cant = st.getCantidad() - cant;
+					st.setCantidad(cant);
+					prod.setStock(stk);
+					valor = DAOProducto.updateProducto(prod);
+					valorS = DAOVTA.updateStock(st);
+				}
+				int valor1 = DAOcompra.updateCompra(comp);
+				if(valor1 != 0 && valor != 0 && valorS && updateProv != 0 && updateCC != 0){
+					msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito! La compra se cancelo",
+							null);
+				}else{
+					msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error! La compra no pudo cancelarse, intentelo nuevamente",
+							null);
+				}
 			}else{
-				msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error! La compra no pudo cancelarse, intentelo nuevamente",
-						null);
+				msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El stock del producto: " + nombProd + " no es suficiente con el precio: " + precComp + "! "
+						+ "No se pudo dar de baja la compra!", null);
 			}
-		}else{
-			msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El stock del producto: " + nombProd + " no es suficiente con el precio: " + precComp + "! "
-					+ "No se pudo dar de baja la compra!", null);
-		}
-		listaPedidos = null;
-		filteredPedidos = null;
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		listaPedidos = DAOcompra.getPedidos();
-		filteredPedidos = listaPedidos;
-		estadoPedidos = "";
-		idProveedorPedidos = 0;
+			listaPedidos = null;
+			filteredPedidos = null;
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaPedidos = DAOcompra.getPedidos();
+			filteredPedidos = listaPedidos;
+			estadoPedidos = "";
+			idProveedorPedidos = 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Ocurrió un error al dar de baja la compra! Error: " + e.getMessage(), null);
+			listaPedidos = null;
+			filteredPedidos = null;
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaPedidos = DAOcompra.getPedidos();
+			filteredPedidos = listaPedidos;
+			estadoPedidos = "";
+			idProveedorPedidos = 0;
+		}		
 	}
 
 	public void onConfPedido(Compra pedido) {
@@ -4894,7 +4906,7 @@ public class Managed implements Serializable {
 		boolean valorProd = true;
 		for (DetalleCompra detalleCompra : listDetalles) {
 			Producto prod = new Producto();
-			Stock stock = DAOcompra.getStockPorPrecProd(
+			Stock stock = DAOcompra.getStockPorProd(
 					detalleCompra.getPrecioUnitario(),
 					detalleCompra.getProducto());
 			prod = detalleCompra.getProducto();
@@ -5055,7 +5067,7 @@ public class Managed implements Serializable {
 							valorD = false;
 						}
 						Producto prod = new Producto();
-						Stock stock = DAOcompra.getStockPorPrecProd(
+						Stock stock = DAOcompra.getStockPorProd(
 								detalleCompra.getPrecioUnitario(),
 								detalleCompra.getProducto());
 						prod = detalleCompra.getProducto();
