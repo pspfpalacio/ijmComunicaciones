@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+	<ui:composition>	
+		<p:menubar styleClass="menu-bar">
+
+			<f:facet name="options">
+				
+				<p:commandLink rendered="#{MBean.renderedStockMinimo}" action="#{MBean.goStockMinimo()}" process="@this">				
+					<h:graphicImage value="/images/exclam.gif" width="20"
+											id="icoStock" title="Productos por debajo del stock minimo" />
+				</p:commandLink>
+				<p:outputLabel value="#{MBean.nombreLogin}     " styleClass="username-label"/>				
+				<p:commandButton icon="ui-icon-gear" action="#{MBean.settingUsuario()}" process="@this"
+					oncomplete="PF('setting').show();" update="panelSetting"/>
+				<p:commandButton id="ButtonLogout" action="#{MBean.logout()}" 
+					value="Logout" icon="ui-icon-extlink" ajax="false" url="/login.xhtml"/>
+			</f:facet>
+
+		</p:menubar>		
+		
+		<ui:include src="/includes/settings.xhtml" />
+		
+		<p:idleMonitor onactive="PF('sessionTimeOutDialog').show()" timeout="3600000" />
+		<p:dialog header="Session Caducada!" widgetVar="sessionTimeOutDialog" modal="true" closable="false" 
+			width="400" visible="false">
+			
+			<h:outputText value="La sesión ha caducado, por favor, pulse sobre el siguiente botón para volver a acceder a la aplicación" />
+			<input id="confirmBackToLogin" type="button" value="Volver a acceder a la aplicación" 
+			onclick="window.location='#{facesContext.externalContext.requestContextPath}/login.xhtml';" />
+			
+		</p:dialog>
+		
+		<script type="text/javascript">
+			  //<![CDATA[
+			  function logout(xhr, status, args) {
+			    setTimeout(function() {
+			      window.location = '/login.xhtml';
+			    }, 3600);
+			  }
+			//]]>
+		</script>
+	</ui:composition>
+</html>

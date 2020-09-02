@@ -1,14 +1,73 @@
 @CHARSET "ISO-8859-1";
 
+.container {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.container-left {
+	width: 20%;
+	margin-top: 0px;
+}
+
+.container-right {
+	width: 80%;
+	margin-top: 0px;
+}
+
+.button-menu {
+	width: 100%;
+	text-align: left;
+}
+
+.menu-bar {
+	border: none;	
+}
+
+.username-label {
+	margin-left: 4px;
+	margin-top: 0px;
+	font-family: sans-serif; 
+}
+
+@media all and (max-width: 600px){
+	.container {
+		-webkit-flex-flow: column wrap;
+	}
+	.container-left {
+		width: 100%;
+		margin-top: 0px;
+		font-size: 30px;
+	}
+	
+	.container-right {
+		display: none;
+	}
+}
+
+@media only screen and (max-device-width: 600px){	
+	.container-left {
+		width: 100%;
+		margin-top: 0px;
+		font-size: 30px;
+	}
+	
+	.container-right {
+		display: none;
+	}
+}
+
+/* @CHARSET "ISO-8859-1";
+
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
 body {
 	background: -webkit-linear-gradient(top, rgba(220, 228, 230, 1) 0%,
-		rgba(255, 255, 255, 1) 100%); /* Chrome10+,Safari5.1+ */
+		rgba(255, 255, 255, 1) 100%); Chrome10+,Safari5.1+
 	margin: 0px;
 }
 
-/* CLASES PARA PODER TENER EL FOOTER EN EL FONDO DE LA PAGINA */
+CLASES PARA PODER TENER EL FOOTER EN EL FONDO DE LA PAGINA
 * {
 	margin: 0;
 }
@@ -35,11 +94,11 @@ body {
 	margin: 0 auto -101px;
 	z-index: 100;
 
-	/* the bottom margin is the negative value of the footer's height */
+	the bottom margin is the negative value of the footer's height
 }
 
 .footer,.push {
-	height: 200px; /* .push must be the same height as .footer */
+	height: 200px; .push must be the same height as .footer
 	clear: both;
 	position: relative;
 	bottom: 0;
@@ -365,4 +424,4 @@ body {
 	#cssmenu>ul>li.has-sub>a::after,#cssmenu ul ul li.has-sub>a::after {
 		display: none;
 	}
-}
+} */

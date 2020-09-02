@@ -3,14 +3,17 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
 
 	<ui:composition>
-	<div>
-		<p:menubar>
-			<p:menuitem value="Inicio" action="#{MBean.goIndex()}" icon="ui-icon-myHome" process="@this"/>
-			
-			<p:submenu label="Parametros" rendered="#{MBean.vistaParametros}">
+	
+		<p:commandButton value="Inicio" action="#{MBean.goIndex()}" process="@this" styleClass="button-menu"/>
+		
+		<p:separator />
+		
+		<p:panelMenu>			
+			<p:submenu label="Configuraciones" rendered="#{MBean.vistaParametros}">
 				<p:menuitem value="Rubros" action="#{MBean.goRubro()}" rendered="#{MBean.vistaRubro}" process="@this"/>
 				<p:menuitem value="Productos" action="#{MBean.goProductos()}" rendered="#{MBean.vistaProducto}" process="@this"/>
 				<p:menuitem value="Listas de Precios" action="#{MBean.goListaPrecios()}" rendered="#{MBean.vistaLP}" process="@this"/>
@@ -26,14 +29,15 @@
 			</p:submenu>
 			
 			<p:submenu label="Ventas" rendered="#{MBean.vistaMenuVenta}">
-				<p:menuitem value="Nueva Venta" action="#{MBean.nuevaVenta()}" rendered="#{MBean.vistaNuevaVenta}" process="@this"/>
-				<p:menuitem value="Ventas Listado" action="#{MBean.goBajaVenta()}" rendered="#{MBean.vistaVentas}" process="@this"/>
+				<p:menuitem value="Nueva" action="#{MBean.nuevaVenta()}" rendered="#{MBean.vistaNuevaVenta}" process="@this"/>
+				<p:menuitem value="Listado" action="#{MBean.goBajaVenta()}" rendered="#{MBean.vistaVentas}" process="@this"/>
 			</p:submenu>
 			
-			<p:submenu label="Movimientos" rendered="#{MBean.vistaMovimientos}">
+			<p:submenu label="Movimientos de dinero" rendered="#{MBean.vistaMovimientos}">
 				<p:menuitem value="Pago" action="#{MBean.goPagos()}" rendered="#{MBean.vistaPagos}" process="@this"/>
 				<p:menuitem value="Credito" action="#{MBean.goCredito()}" rendered="#{MBean.vistaCredito}" process="@this"/>
 				<p:menuitem value="Debito" action="#{MBean.goDebito()}" rendered="#{MBean.vistaDebito}" process="@this"/>
+				<p:menuitem value="Caja" action="#{MBean.goCaja()}" rendered="#{MBean.vistaCaja}" process="@this" />
 			</p:submenu>
 			
 			<p:submenu label="Cargas Virtuales" rendered="#{MBean.vistaMenuCargaVirtual}">
@@ -60,45 +64,10 @@
 				<p:menuitem value="Patrimonio" action="#{MBean.goPatrimonio()}" process="@this"/>				
 			</p:submenu>
 			
-			<p:menuitem value="Caja" action="#{MBean.goCaja()}" rendered="#{MBean.vistaCaja}" process="@this"/>
-			
-			<p:menuitem value="Backups" action="#{MBean.goBackup()}" process="@this"/>
-			
-			<p:menuitem value="Excels" action="#{MBean.goCargaExcel()}" process="@this" />
-
-			<f:facet name="options">
-				
-				<p:commandLink rendered="#{MBean.renderedStockMinimo}" action="#{MBean.goStockMinimo()}" process="@this">				
-					<h:graphicImage value="/images/exclam.gif" width="20"
-											id="icoStock" title="Productos por debajo del stock minimo" />
-				</p:commandLink>
-				<p:outputLabel value="#{MBean.nombreLogin}     " style="font-family:sans-serif;" />				
-				<p:commandButton icon="ui-icon-gear" action="#{MBean.settingUsuario()}" process="@this"
-					oncomplete="PF('setting').show();" update="panelSetting"/>
-				<p:commandButton id="ButtonLogout" action="#{MBean.logout()}" 
-					value="Logout" icon="ui-icon-extlink" ajax="false" url="/login.xhtml"/>
-			</f:facet>
-
-		</p:menubar>
-		<ui:include src="/includes/settings.xhtml" />
-		<p:idleMonitor onactive="PF('sessionTimeOutDialog').show()" timeout="3600000" />
-		<p:dialog header="Session Caducada!" widgetVar="sessionTimeOutDialog" modal="true" closable="false" 
-			width="400" visible="false">
-			
-			<h:outputText value="La sesión ha caducado, por favor, pulse sobre el siguiente botón para volver a acceder a la aplicación" />
-			<input id="confirmBackToLogin" type="button" value="Volver a acceder a la aplicación" 
-			onclick="window.location='#{facesContext.externalContext.requestContextPath}/login.xhtml';" />
-			
-		</p:dialog>
-	</div>
-	<script type="text/javascript">
-		  //<![CDATA[
-		  function logout(xhr, status, args) {
-		    setTimeout(function() {
-		      window.location = '/login.xhtml';
-		    }, 3600);
-		  }
-		//]]>
-	</script>
+			<p:submenu label="Soporte de sistema" rendered="#{MBean.vistaMenuCargaVirtual}">
+				<p:menuitem value="Backups" action="#{MBean.goBackup()}" process="@this" />			
+				<p:menuitem value="Excels" action="#{MBean.goCargaExcel()}" process="@this" />
+			</p:submenu>
+		</p:panelMenu>
 	</ui:composition>
 </html>
